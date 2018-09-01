@@ -31,7 +31,7 @@ $polyfills = [
 
 
   <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-  
+
   <link rel="stylesheet" href="assets/web/assets/mobirise-icons-bold/mobirise-icons-bold.css">
   <link rel="stylesheet" href="assets/web/assets/mobirise-icons/mobirise-icons.css">
   <link rel="stylesheet" href="assets/tether/tether.min.css">
@@ -107,7 +107,7 @@ $polyfills = [
           <div class="col-12 col-md-3">
             <div class="media-wrap">
               <a href="https://learncode.com.au">
-                <img src="assets/images/justlogobig-copy-170x136.png" alt="CodeSpace Education" title="CodeSpace Education">  
+                <img src="assets/images/justlogobig-copy-170x136.png" alt="CodeSpace Education" title="CodeSpace Education">
               </a>
             </div>
           </div>
@@ -185,5 +185,6 @@ $polyfills = [
   <script src="assets/slidervideo/script.js"></script>
   <script src="assets/gallery/player.min.js"></script>
   <script src="assets/gallery/script.js"></script>
+  <script src="assets/formoid/formoid.min.js"></script>
 </body>
 </html>

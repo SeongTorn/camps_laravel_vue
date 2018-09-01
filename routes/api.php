@@ -34,4 +34,6 @@ Route::group(['middleware' => 'guest:api'], function () {
   Route::get('oauth/{driver}/callback', 'Auth\OAuthController@handleProviderCallback')->name('oauth.callback');
 });
 
-Route::post('postcodes', 'Camps\PostController@getPostCodes');
+Route::post('postcodes', 'Camp\PostController@getPostCodes');
+Route::post('camps', 'Camp\CampController@getLocationCamps');
+Route::post('details', 'Camp\CampController@getCampDetails');

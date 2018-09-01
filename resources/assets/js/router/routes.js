@@ -10,10 +10,14 @@ const Settings = () => import('~/pages/settings/index').then(m => m.default || m
 const SettingsProfile = () => import('~/pages/settings/profile').then(m => m.default || m)
 const SettingsPassword = () => import('~/pages/settings/password').then(m => m.default || m)
 
-const CampsSearchconst = () => import('~/pages/camps/search').then(m => m.default || m)
+const CampSearch = () => import('~/pages/camp/search').then(m => m.default || m)
+const CampSearchResults = () => import('~/pages/camp/results').then(m => m.default || m)
+const CampDetails = () => import('~/pages/camp/details').then(m => m.default || m)
 
 export default [
-  { path: '/', name: 'search', component: CampsSearchconst },
+  { path: '/', name: 'search', component: CampSearch },
+  { path: '/results', name: 'results', component: CampSearchResults },
+  { path: '/details', name: 'details', component: CampDetails },
 
   { path: '/login', name: 'login', component: Login },
   { path: '/register', name: 'register', component: Register },
