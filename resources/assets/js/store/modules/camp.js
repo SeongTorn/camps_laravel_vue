@@ -5,10 +5,10 @@ import * as types from '../mutation-types'
 // state
 export const state = {
   camps: null,
-  location: JSON.parse(Cookies.get('location')),
+  location: Cookies.get('location') ? JSON.parse(Cookies.get('location')) : null,
   camp_id: Cookies.get('camp_id'),
-  parent: null,
-  children: null
+  parent: Cookies.get('parent') ? JSON.parse(Cookies.get('parent')) : null,
+  children: []
 }
 
 // getters
@@ -38,6 +38,13 @@ export const mutations = {
   },
   [types.SET_PARENT] (state, { parent }) {
     state.parent = parent
+    Cookies.set('parent', parent, { expires: 365 })
+  },
+  [types.ADD_CHILDREN] (state, { child }) {
+    state.children.push(child)
+  },
+  [types.SET_CHILDREN] (state, { children }) {
+    state.children = children
   },
 }
 
@@ -53,12 +60,26 @@ export const actions = {
     commit(types.SET_CAMPID, camp_id)
   },
   setParent ({ commit }, parent) {
-    commit(types.SET_CAMPS, parent)
+    commit(types.SET_PARENT, parent)
+  },
+  addChildren ({ commit }, child) {
+    console.log(child)
+    commit(types.ADD_CHILDREN, child)
   },
   async fetchLocationCamps ({ commit }, post_id) {
     try {
       const { data } = await axios.post('/api/camps', {post_id: post_id})
       commit(types.SET_CAMPS, { camps: data })
+    } catch (e) {
+      commit(types.INIT_CAMPS)
+    }
+  },
+  async fetchChildren ({ commit }, parent_id) {
+    try {
+      const { data } = await axios.post('/api/children', {parent_id: parent_id})
+      if (data.status == "success") {
+        commit(types.SET_CHILDREN, { children: data.children })
+      }
     } catch (e) {
       commit(types.INIT_CAMPS)
     }

@@ -25,24 +25,24 @@ $polyfills = [
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Mobirise v4.7.2, mobirise.com">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-  <link rel="shortcut icon" href="assets/images/s3.amazonaws.com-upload.uxpin-files-867974-860361-codespace-logo-1525308909395-a043ca-450x120.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/assets/images/s3.amazonaws.com-upload.uxpin-files-867974-860361-codespace-logo-1525308909395-a043ca-450x120.png" type="image/x-icon">
   <meta name="description" content="">
   <title>{{ config('app.name') }}</title>
 
 
   <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
-  <link rel="stylesheet" href="assets/web/assets/mobirise-icons-bold/mobirise-icons-bold.css">
-  <link rel="stylesheet" href="assets/web/assets/mobirise-icons/mobirise-icons.css">
-  <link rel="stylesheet" href="assets/tether/tether.min.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
-  <link rel="stylesheet" href="assets/dropdown/css/style.css">
-  <link rel="stylesheet" href="assets/socicon/css/styles.css">
-  <link rel="stylesheet" href="assets/theme/css/style.css">
-  <link rel="stylesheet" href="assets/gallery/style.css">
-  <link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css">
+  <link rel="stylesheet" href="/assets/web/assets/mobirise-icons-bold/mobirise-icons-bold.css">
+  <link rel="stylesheet" href="/assets/web/assets/mobirise-icons/mobirise-icons.css">
+  <link rel="stylesheet" href="/assets/tether/tether.min.css">
+  <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap-grid.min.css">
+  <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap-reboot.min.css">
+  <link rel="stylesheet" href="/assets/dropdown/css/style.css">
+  <link rel="stylesheet" href="/assets/socicon/css/styles.css">
+  <link rel="stylesheet" href="/assets/theme/css/style.css">
+  <link rel="stylesheet" href="/assets/gallery/style.css">
+  <link rel="stylesheet" href="/assets/mobirise/css/mbr-additional.css">
 
 </head>
 <body>
@@ -61,7 +61,7 @@ $polyfills = [
           <div class="navbar-brand">
             <span class="navbar-logo">
               <a href="https://learncode.com.au">
-                <img src="assets/images/s3.amazonaws.com-upload.uxpin-files-867974-860361-codespace-logo-1525308909395-a043ca-450x120.png" alt="Mobirise" title="" style="height: 3.8rem;">
+                <img src="/assets/images/s3.amazonaws.com-upload.uxpin-files-867974-860361-codespace-logo-1525308909395-a043ca-450x120.png" alt="Mobirise" title="" style="height: 3.8rem;">
               </a>
             </span>
           </div>
@@ -107,7 +107,7 @@ $polyfills = [
           <div class="col-12 col-md-3">
             <div class="media-wrap">
               <a href="https://learncode.com.au">
-                <img src="assets/images/justlogobig-copy-170x136.png" alt="CodeSpace Education" title="CodeSpace Education">
+                <img src="/assets/images/justlogobig-copy-170x136.png" alt="CodeSpace Education" title="CodeSpace Education">
               </a>
             </div>
           </div>
@@ -166,25 +166,25 @@ $polyfills = [
     <script src="{{ mix('js/app.js') }}"></script>
   @endif
 
-  <script src="assets/web/assets/jquery/jquery.min.js"></script>
-  <script src="assets/popper/popper.min.js"></script>
-  <script src="assets/tether/tether.min.js"></script>
-  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/assets/web/assets/jquery/jquery.min.js"></script>
+  <script src="/assets/popper/popper.min.js"></script>
+  <script src="/assets/tether/tether.min.js"></script>
+  <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
 
-  <script src="assets/parallax/jarallax.min.js"></script>
-  <script src="assets/mbr-tabs/mbr-tabs.js"></script>
-  <script src="assets/masonry/masonry.pkgd.min.js"></script>
-  <script src="assets/imagesloaded/imagesloaded.pkgd.min.js"></script>
-  <script src="assets/smoothscroll/smooth-scroll.js"></script>
-  <script src="assets/vimeoplayer/jquery.mb.vimeo_player.js"></script>
-  <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>
-  <script src="assets/mbr-switch-arrow/mbr-switch-arrow.js"></script>
-  <script src="assets/dropdown/js/script.min.js"></script>
-  <script src="assets/bootstrapcarouselswipe/bootstrap-carousel-swipe.js"></script>
-  <script src="assets/theme/js/script.js"></script>
-  <script src="assets/slidervideo/script.js"></script>
-  <script src="assets/gallery/player.min.js"></script>
-  <script src="assets/gallery/script.js"></script>
-  <script src="assets/formoid/formoid.min.js"></script>
+  <script src="/assets/parallax/jarallax.min.js"></script>
+  <script src="/assets/mbr-tabs/mbr-tabs.js"></script>
+  <script src="/assets/masonry/masonry.pkgd.min.js"></script>
+  <script src="/assets/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="/assets/smoothscroll/smooth-scroll.js"></script>
+  <script src="/assets/vimeoplayer/jquery.mb.vimeo_player.js"></script>
+  <script src="/assets/touchswipe/jquery.touch-swipe.min.js"></script>
+  <script src="/assets/mbr-switch-arrow/mbr-switch-arrow.js"></script>
+  <script src="/assets/dropdown/js/script.min.js"></script>
+  <script src="/assets/bootstrapcarouselswipe/bootstrap-carousel-swipe.js"></script>
+  <script src="/assets/theme/js/script.js"></script>
+  <script src="/assets/slidervideo/script.js"></script>
+  <script src="/assets/gallery/player.min.js"></script>
+  <script src="/assets/gallery/script.js"></script>
+  <script src="/assets/formoid/formoid.min.js"></script>
 </body>
 </html>

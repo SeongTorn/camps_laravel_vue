@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Camp;
 
-use App\Http\Controllers\Camp\PostController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Camp\PostController;
+use App\Models\ParentDetail;
+use App\Models\ChildDetail;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -124,6 +126,109 @@ class CampController extends Controller
                   ->groupBy('camps.id')
                   ->get();
     return response()->json($camp->toArray()[0]);
+  }
+
+  public function saveParentDetails(Request $request)
+  {
+    $pData = ParentDetail::where('email', $request->get('email'));
+    $isExist = $pData->count();
+
+    if ($isExist) {
+      $pData->update([
+        'first_name'=>$request->get('first_name'),
+        'last_name'=>$request->get('last_name'),
+        'email'=>$request->get('email'),
+        'phone'=>$request->get('phone'),
+        'postcode'=>$request->get('postcode'),
+        'emergency_contact'=>$request->get('emergency_contact'),
+        'heard_about'=>$request->get('heard_about'),
+        'photos_permitted'=>$request->get('photos_permitted') ? $request->get('photos_permitted') : '',
+      ]);
+    } else {
+      $pDetail = new ParentDetail;
+      $pDetail->first_name = $request->get('first_name');
+      $pDetail->last_name = $request->get('last_name');
+      $pDetail->email = $request->get('email');
+      $pDetail->phone = $request->get('phone');
+      $pDetail->postcode = $request->get('postcode');
+      $pDetail->emergency_contact = $request->get('emergency_contact');
+      $pDetail->heard_about = $request->get('heard_about');
+      $pDetail->photos_permitted = $request->get('photos_permitted');
+      $pDetail->access_code = str_random(10);
+      $pDetail->save();
+    }
+
+    $parent = ParentDetail::where('email', $request->get('email'));
+    if ($parent->count()) {
+      $parent = $parent->get()[0];
+      return response()->json($parent->toArray());
+    } else {
+      return response()->json(['id'=>0]);
+    }
+  }
+
+  public function saveChildDetails(Request $request)
+  {
+    $child = ChildDetail::where('first_name', $request->get('first_name'))
+                            ->where('parent_id', '=', $request->get('parent_id'));
+    $isExist = $child->count();
+    //$input = array_filter($request->all(), 'strlen');
+    $birthday = Carbon::create($request->get('birth_year'), $request->get('birth_month'), $request->get('birth_day'));
+
+    if ($isExist) {
+      $child->update([
+        'first_name'=>$request->get('first_name'),
+        'last_name'=>$request->get('last_name'),
+        'date_of_birth'=>$birthday,
+        'school'=>$request->get('school'),
+        'allergies'=>$request->get('allergies') ?: '',
+        'learning_difficulties'=>$request->get('learning_difficulties') ?: '',
+        'parent_id'=>$request->get('parent_id'),
+        'is_active'=>1
+      ]);
+    } else {
+      $sDetail = new ChildDetail;
+      $sDetail->first_name = $request->get('first_name');
+      $sDetail->last_name = $request->get('last_name');
+      $sDetail->date_of_birth = $birthday;
+      $sDetail->school = $request->get('school');
+      $sDetail->allergies = $request->get('allergies') ?: '';
+      $sDetail->learning_difficulties = $request->get('learning_difficulties') ?: '';
+      $sDetail->parent_id = $request->get('parent_id');
+      $sDetail->is_active = 1;
+      $sDetail->save();
+    }
+
+    $child = ChildDetail::where('first_name', $request->get('first_name'))
+                          ->where('parent_id', '=', $request->get('parent_id'))
+                          ->where('is_active', '=', 1);
+    if ($child->count()) {
+      $child = $child->get()[0];
+      return response()->json($child->toArray());
+    } else {
+      return response()->json(['id'=>0]);
+    }
+  }
+
+  public function getChildren(Request $request)
+  {
+    $children = ChildDetail::where('parent_id', $request->get('parent_id'))
+                            ->where('is_active', 1)
+                            ->get();
+    if (count($children) > 0) {
+      return response()->json(['status'=>'success', 'children'=>$children->toArray()]);
+    } else {
+      return response()->json(['status'=>'error']);
+    }
+  }
+
+  public function deactiveChild(Request $request)
+  {
+    $children = ChildDetail::where('id', $request->get('id'));
+    if ($children->count() > 0) {
+      $children->update(['is_active' => 0]);
+    }
+    return response()->json(['status'=>'success']);
   }
 
   public function toNoCampPage(Request $request)

@@ -36,4 +36,8 @@ Route::group(['middleware' => 'guest:api'], function () {
 
 Route::post('postcodes', 'Camp\PostController@getPostCodes');
 Route::post('camps', 'Camp\CampController@getLocationCamps');
+Route::post('children', 'Camp\CampController@getChildren');
 Route::post('details', 'Camp\CampController@getCampDetails');
+Route::post('register-parent', 'Camp\CampController@saveParentDetails');
+Route::post('register-child', 'Camp\CampController@saveChildDetails');
+Route::post('deactive-child', 'Camp\CampController@deactiveChild');

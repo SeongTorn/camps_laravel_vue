@@ -41,7 +41,7 @@
             <div v-for="camp in camp_list.data" :key="camp.id" class="card p-3 col-12 col-md-6 col-lg-4">
               <div class="card-wrapper">
                 <div class="card-img">
-                  <img src="assets/images/file-27-624x465.png">
+                  <img src="/assets/images/file-27-624x465.png">
                 </div>
                 <div class="card-box">
                   <h4 class="card-title mbr-fonts-style display-7">{{ camp.topic }}</h4>
@@ -55,16 +55,14 @@
                 <div class="mbr-section-btn text-center">
                   <a href="#" class="btn btn-primary display-4" @click="detail(camp.id)">
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <span class="mbrib-star mbr-iconfont mbr-iconfont-btn"></span>
-                    Learn More
+                    <span class="mbrib-star mbr-iconfont mbr-iconfont-btn"></span>Learn More
                     &nbsp;&nbsp;&nbsp;&nbsp;
                   </a>
                 </div>
                 <div class="mbr-section-btn text-center">
-                  <a v-if="camp.class_capacity - camp.sold > 0" href="#" class="btn btn-secondary display-4">
+                  <a v-if="camp.class_capacity - camp.sold > 0" href="#" class="btn btn-secondary display-4" @click="register">
                     &nbsp;&nbsp;
-                    <span class="mbrib-rocket mbr-iconfont mbr-iconfont-btn"></span>
-                    Register Now
+                    <span class="mbrib-rocket mbr-iconfont mbr-iconfont-btn"></span>Register Now
                     &nbsp;&nbsp;
                   </a>
                   <a v-else href="#" class="btn btn-danger display-4">
@@ -141,7 +139,10 @@ export default {
   methods: {
     detail(id) {
       this.$store.dispatch('camp/setCampId', {camp_id: id})
-      this.$router.push({name: 'details'})
+      this.$router.push({name: 'camp.details'})
+    },
+    register() {
+      this.$router.push({name: 'camp.register'});
     }
   }
 }

@@ -4,7 +4,7 @@
       <div class="container">
         <div class="media-container-row">
           <div class="mbr-figure" style="width: 100%;">
-            <img src="assets/images/minecraftdude-1-640x360.png" alt="Mobirise" title="">
+            <img src="/assets/images/minecraftdude-1-640x360.png" alt="Mobirise" title="">
           </div>
           <div class="media-content">
             <h1 class="mbr-section-title mbr-white pb-3 mbr-fonts-style display-2">
@@ -16,7 +16,7 @@
               </p>
             </div>
             <div class="mbr-section-btn">
-              <a class="btn btn-md btn-secondary display-4" href="#">
+              <a class="btn btn-md btn-secondary display-4" href="#" @click="register">
                 <span class="mbrib-rocket mbr-iconfont mbr-iconfont-btn"></span>
                 Register Now
               </a>
@@ -67,7 +67,7 @@
         <div class="row main justify-content-center">
           <div class="media-container-column col-12 col-lg-3 col-md-4">
             <div class="mbr-section-btn align-left py-4">
-              <a class="btn btn-secondary display-4" href="#">
+              <a class="btn btn-secondary display-4" href="#" @click="register">
                 <span class="mbrib-rocket mbr-iconfont mbr-iconfont-btn"></span>
                 &nbsp;Register Now<br>
               </a>
@@ -221,7 +221,7 @@
                 <div>
                   <div v-for="i in 8" :key="i" class="mbr-gallery-item mbr-gallery-item--pNaN" data-video-url="false" data-tags="gallery_tags[i-1]">
                     <div href="#lb-gallery3-1a" data-slide-to="i-1" data-toggle="modal">
-                      <img :src="'assets/images/gallery0' + (i-1) + '.jpg'"/>
+                      <img :src="'/assets/images/gallery0' + (i-1) + '.jpg'"/>
                       <span class="icon-focus"></span>
                     </div>
                   </div>
@@ -238,7 +238,7 @@
                   <div class="carousel-inner">
                     <div v-for="i in 8" :key="i">
                       <div :class="['carousel-item', {'active': i == 1}]">
-                        <img :src="'assets/images/gallery0' + (i-1) + '.jpg'"/>
+                        <img :src="'/assets/images/gallery0' + (i-1) + '.jpg'"/>
                       </div>
                     </div>
                   </div>
@@ -566,9 +566,9 @@
         <div class="row main justify-content-center">
           <div class="media-container-column col-12 col-lg-3 col-md-4">
             <div class="mbr-section-btn align-left py-4">
-              <a href="#" class="btn btn-md btn-secondary display-4">
+              <a href="#" class="btn btn-md btn-secondary display-4" @click="enrol">
                 <span class="mbrib-rocket mbr-iconfont mbr-iconfont-btn"></span>
-                Enrol Now'
+                Enrol Now
               </a>
             </div>
           </div>
@@ -607,7 +607,10 @@ export default {
     });
   },
   methods: {
-    detail(id) {
+    register() {
+      this.$router.push({name: 'camp.register.parent1'});
+    },
+    enrol() {
 
     }
   }
@@ -617,9 +620,6 @@ export default {
 <style>
   .card-wrapper {
     display: table;
-  }
-  .media-container-row {
-    flex-wrap: wrap !important;
   }
   .camp-list {
     justify-content: flex-start !important;

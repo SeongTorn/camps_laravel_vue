@@ -52,7 +52,7 @@ export default {
     },
     search() {
       this.$store.dispatch('camp/setLocation', {location: this.sel_post})
-      this.$router.push({name: 'results'})
+      this.$router.push({name: 'camp.results'})
     }
   },
   watch: {

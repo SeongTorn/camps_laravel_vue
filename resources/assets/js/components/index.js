@@ -5,6 +5,7 @@ import Button from './Button'
 import Checkbox from './Checkbox'
 import TopSpace from './TopSpace'
 import BottomSpace from './BottomSpace'
+import SafetySpace from './SafetySpace'
 import { HasError, AlertError, AlertSuccess } from 'vform'
 
 // Components that are registered globaly.
@@ -17,7 +18,8 @@ import { HasError, AlertError, AlertSuccess } from 'vform'
   AlertError,
   AlertSuccess,
   TopSpace,
-  BottomSpace
+  BottomSpace,
+  SafetySpace
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })
