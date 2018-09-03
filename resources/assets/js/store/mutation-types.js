@@ -9,7 +9,7 @@ export const UPDATE_USER = 'UPDATE_USER'
 // lang.js
 export const SET_LOCALE = 'SET_LOCALE'
 
-export const SET_LOCATION = 'UPDATE_LOCATION'
+export const SET_POST = 'SET_POST'
 export const SET_CAMPS = 'SET_CAMPS'
 export const SET_CAMPID = 'SET_CAMPID'
 export const SET_PARENT = 'SET_PARENT'

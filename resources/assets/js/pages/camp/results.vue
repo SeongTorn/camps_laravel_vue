@@ -5,7 +5,7 @@
         <div class="media-container-column mbr-white col-md-12">
           <h3 class="mbr-section-subtitle py-3 mbr-fonts-style display-5">&nbsp;</h3>
           <h1 class="mbr-section-title py-3 mbr-fonts-style display-2">
-            We've found the closest&nbsp;<strong>CodeSpace Camps</strong>&nbsp;to {{ location.suburb }} {{ location.state }}.
+            We've found the closest&nbsp;<strong>CodeSpace Camps</strong>&nbsp;to {{ post.suburb }} {{ post.state }}.
           </h1>
           <p class="mbr-text py-3 mbr-fonts-style display-5">
             CodeSpace Education runs a range of School Holiday CodeSpace Camps all over Australia.<br><br>We have curated the closest workshops for you below.
@@ -25,7 +25,7 @@
           <div class="row justify-content-center content-row">
             <div class="media-container-column title col-12 col-lg-7 col-md-6">
               <h3 class="mbr-section-subtitle align-left mbr-light pb-3 mbr-fonts-style display-5">
-                Only {{ camp_list.location.dist }}km from {{ location.suburb }} {{ location.state }}
+                Only {{ camp_list.location.dist }}km from {{ post.suburb }} {{ post.state }}
               </h3>
               <h2 class="align-left mbr-bold mbr-fonts-style display-2">CAMPS @ {{ camp_list.location.name }}</h2>
             </div>
@@ -38,7 +38,7 @@
       <section class="features3 cid-qQWAzjWbWN">
         <div class="container">
           <div class="media-container-row camp-list">
-            <div v-for="camp in camp_list.data" :key="camp.id" class="card p-3 col-12 col-md-6 col-lg-4">
+            <div v-for="camp in camp_list.camps" :key="camp.id" class="card p-3 col-12 col-md-6 col-lg-4">
               <div class="card-wrapper">
                 <div class="card-img">
                   <img src="/assets/images/file-27-624x465.png">
@@ -60,7 +60,7 @@
                   </a>
                 </div>
                 <div class="mbr-section-btn text-center">
-                  <a v-if="camp.class_capacity - camp.sold > 0" href="#" class="btn btn-secondary display-4" @click="register">
+                  <a v-if="camp.class_capacity - camp.sold > 0" href="#" class="btn btn-secondary display-4" @click="register(camp.id)">
                     &nbsp;&nbsp;
                     <span class="mbrib-rocket mbr-iconfont mbr-iconfont-btn"></span>Register Now
                     &nbsp;&nbsp;
@@ -129,19 +129,20 @@ import axios from 'axios';
 
 export default {
   computed: mapGetters({
-    location: 'camp/location',
+    post: 'camp/post',
     camps: 'camp/camps'
   }),
   created() {
     // console.log(this.location)
-    this.$store.dispatch('camp/fetchLocationCamps', {post_id: this.location.id})
+    this.$store.dispatch('camp/fetchLocationCamps', {post_id: this.post.id})
   },
   methods: {
     detail(id) {
       this.$store.dispatch('camp/setCampId', {camp_id: id})
       this.$router.push({name: 'camp.details'})
     },
-    register() {
+    register(id) {
+      this.$store.dispatch('camp/setCampId', {camp_id: id})
       this.$router.push({name: 'camp.register'});
     }
   }
@@ -151,9 +152,6 @@ export default {
 <style>
   .card-wrapper {
     display: table;
-  }
-  .media-container-row {
-    flex-wrap: wrap !important;
   }
   .camp-list {
     justify-content: flex-start !important;

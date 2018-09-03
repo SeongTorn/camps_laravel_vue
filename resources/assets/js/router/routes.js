@@ -17,6 +17,8 @@ const CampParent1 = () => import('~/pages/camp/parent1').then(m => m.default || 
 const CampParent2 = () => import('~/pages/camp/parent2').then(m => m.default || m)
 const CampChild = () => import('~/pages/camp/child').then(m => m.default || m)
 const CampChildren = () => import('~/pages/camp/children').then(m => m.default || m)
+const CampSelect = () => import('~/pages/camp/select').then(m => m.default || m)
+const CampPayment = () => import('~/pages/camp/payment').then(m => m.default || m)
 
 export default [
   { path: '/camp', name: 'camp.search', component: CampSearch },
@@ -27,6 +29,8 @@ export default [
   { path: '/camp/register/parent2', name: 'camp.register.parent2', component: CampParent2 },
   { path: '/camp/child-details', name: 'camp.child-details', component: CampChild },
   { path: '/camp/all-children', name: 'camp.all-children', component: CampChildren },
+  { path: '/camp/select', name: 'camp.select', component: CampSelect },
+  { path: '/camp/payment', name: 'camp.payment', component: CampPayment },
 
   { path: '/login', name: 'login', component: Login },
   { path: '/register', name: 'register', component: Register },

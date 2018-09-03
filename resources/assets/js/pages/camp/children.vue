@@ -76,7 +76,7 @@ export default {
       this.$router.push({name: 'camp.child-details'});
     },
     next() {
-      this.$router.push({name: 'camp.child-details'});
+      this.$router.push({name: 'camp.select'});
     }
   }
 }

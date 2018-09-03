@@ -588,7 +588,6 @@ import axios from 'axios';
 
 export default {
   computed: mapGetters({
-    location: 'camp/location',
     camp_id: 'camp/camp_id'
   }),
   data() {
@@ -598,9 +597,7 @@ export default {
     }
   },
   created() {
-    console.log(this.camp_id)
     axios.post('/api/details', {camp_id: this.camp_id}).then(response => {
-      console.log(response.data);
       this.camp = response.data;
     }).catch(error => {
       console.error(error.message);
@@ -611,7 +608,7 @@ export default {
       this.$router.push({name: 'camp.register.parent1'});
     },
     enrol() {
-
+      this.$router.push({name: 'camp.select'});
     }
   }
 }

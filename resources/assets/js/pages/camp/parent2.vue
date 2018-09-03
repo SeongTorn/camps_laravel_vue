@@ -82,7 +82,6 @@ export default {
     }
   },
   computed: mapGetters({
-    location: 'camp/location',
     parent: 'camp/parent'
   }),
   created() {

@@ -45,7 +45,7 @@ class CampController extends Controller
     }
 
     usort($closet_locations, function($first,$second){
-      return $first->dist < $second->dist;
+      return $first->dist > $second->dist;
     });
 
     $i = 0;
@@ -86,11 +86,10 @@ class CampController extends Controller
       if (count($camp_data)) {
         $camps[] = array(
           'location' => $location,
-          'data' => $camp_data
+          'camps' => $camp_data
         );
       }
     }
-
     if (!$camps || !count($camps)) {
       // return redirect('no-camps')->with('postcode', $post->getData()->postcode);
       return response()->json(null);

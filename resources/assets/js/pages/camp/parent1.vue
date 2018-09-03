@@ -75,7 +75,6 @@ export default {
     }
   },
   computed: mapGetters({
-    location: 'camp/location',
     camps: 'camp/camps'
   }),
   created() {
