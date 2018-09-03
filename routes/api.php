@@ -41,3 +41,6 @@ Route::post('details', 'Camp\CampController@getCampDetails');
 Route::post('register-parent', 'Camp\CampController@saveParentDetails');
 Route::post('register-child', 'Camp\CampController@saveChildDetails');
 Route::post('deactive-child', 'Camp\CampController@deactiveChild');
+Route::post('check-gift-card', 'Camp\CampController@checkGiftCard');
+Route::post('stripe-publish-key', 'Camp\PaymentController@stripePublishKey');
+Route::post('stripe-create-charge', 'Camp\PaymentController@stripeCreateCharge');

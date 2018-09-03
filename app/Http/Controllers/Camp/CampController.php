@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Camp\PostController;
 use App\Models\ParentDetail;
 use App\Models\ChildDetail;
+use App\Models\GiftCard;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -228,6 +229,21 @@ class CampController extends Controller
       $children->update(['is_active' => 0]);
     }
     return response()->json(['status'=>'success']);
+  }
+
+  public function checkGiftCard(Request $request)
+  {
+    $giftcard = GiftCard::where('gift_card_code', $request->get('code'))
+                          ->where('email', $request->get('email'));
+    if ($giftcard->count() > 0) {
+      $card = $giftcard->get()[0];
+      $amount = $card->total_amount;
+      $redeemed = $card->amount_redeemed;
+      $useable = $amount - $redeemed >= 0 ? $amount - $redeemed : 0;
+      return response()->json(['valid'=>true, 'amount'=>$useable]);
+    } else {
+      return response()->json(['valid'=>false]);
+    }
   }
 
   public function toNoCampPage(Request $request)

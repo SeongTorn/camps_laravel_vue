@@ -3,11 +3,27 @@ import store from '~/store'
 import router from '~/router'
 import i18n from '~/plugins/i18n'
 import App from '~/components/App'
+import VueStripeCheckout from 'vue-stripe-checkout';
 
 import '~/plugins'
 import '~/components'
 
 Vue.config.productionTip = false
+
+// base/global options
+// these options can be overridden
+// by the options in the .open(options)
+// function.
+const options = {
+  key: '',
+  // image: 'https://cdn.meme.am/images/100x100/15882140.jpg',
+  locale: 'auto',
+  currency: 'PHP',
+  billingAddress: false,
+  panelLabel: 'Subscribe {{amount}}'
+}
+
+Vue.use(VueStripeCheckout, options);
 
 /* eslint-disable no-new */
 new Vue({
