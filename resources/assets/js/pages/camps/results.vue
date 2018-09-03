@@ -129,21 +129,21 @@ import axios from 'axios';
 
 export default {
   computed: mapGetters({
-    post: 'camp/post',
-    camps: 'camp/camps'
+    post: 'camps/post',
+    camps: 'camps/camps'
   }),
   created() {
     // console.log(this.location)
-    this.$store.dispatch('camp/fetchLocationCamps', {post_id: this.post.id})
+    this.$store.dispatch('camps/fetchLocationCamps', {post_id: this.post.id})
   },
   methods: {
     detail(id) {
-      this.$store.dispatch('camp/setCampId', {camp_id: id})
-      this.$router.push({name: 'camp.details'})
+      this.$store.dispatch('camps/setCampId', {camp_id: id})
+      this.$router.push({name: 'camps.details'})
     },
     register(id) {
-      this.$store.dispatch('camp/setCampId', {camp_id: id})
-      this.$router.push({name: 'camp.register'});
+      this.$store.dispatch('camps/setCampId', {camp_id: id})
+      this.$router.push({name: 'camps.register'});
     }
   }
 }

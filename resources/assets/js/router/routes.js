@@ -10,27 +10,29 @@ const Settings = () => import('~/pages/settings/index').then(m => m.default || m
 const SettingsProfile = () => import('~/pages/settings/profile').then(m => m.default || m)
 const SettingsPassword = () => import('~/pages/settings/password').then(m => m.default || m)
 
-const CampSearch = () => import('~/pages/camp/search').then(m => m.default || m)
-const CampSearchResults = () => import('~/pages/camp/results').then(m => m.default || m)
-const CampDetails = () => import('~/pages/camp/details').then(m => m.default || m)
-const CampParent1 = () => import('~/pages/camp/parent1').then(m => m.default || m)
-const CampParent2 = () => import('~/pages/camp/parent2').then(m => m.default || m)
-const CampChild = () => import('~/pages/camp/child').then(m => m.default || m)
-const CampChildren = () => import('~/pages/camp/children').then(m => m.default || m)
-const CampSelect = () => import('~/pages/camp/select').then(m => m.default || m)
-const CampPayment = () => import('~/pages/camp/payment').then(m => m.default || m)
+const CampsSearch = () => import('~/pages/camps/search').then(m => m.default || m)
+const CampsSearchResults = () => import('~/pages/camps/results').then(m => m.default || m)
+const CampsDetails = () => import('~/pages/camps/details').then(m => m.default || m)
+const CampsParent1 = () => import('~/pages/camps/parent1').then(m => m.default || m)
+const CampsParent2 = () => import('~/pages/camps/parent2').then(m => m.default || m)
+const CampsChild = () => import('~/pages/camps/child').then(m => m.default || m)
+const CampsChildren = () => import('~/pages/camps/children').then(m => m.default || m)
+const CampsSelect = () => import('~/pages/camps/select').then(m => m.default || m)
+const CampsPayment = () => import('~/pages/camps/payment').then(m => m.default || m)
+const CampsSuccess = () => import('~/pages/camps/success').then(m => m.default || m)
 
 export default [
-  { path: '/camp', name: 'camp.search', component: CampSearch },
-  { path: '/camp/results', name: 'camp.results', component: CampSearchResults },
-  { path: '/camp/details', name: 'camp.details', component: CampDetails },
-  { path: '/camp/register', name: 'camp.register', redirect: { name: 'camp.register.parent1' } },
-  { path: '/camp/register/parent1', name: 'camp.register.parent1', component: CampParent1 },
-  { path: '/camp/register/parent2', name: 'camp.register.parent2', component: CampParent2 },
-  { path: '/camp/child-details', name: 'camp.child-details', component: CampChild },
-  { path: '/camp/all-children', name: 'camp.all-children', component: CampChildren },
-  { path: '/camp/select', name: 'camp.select', component: CampSelect },
-  { path: '/camp/payment', name: 'camp.payment', component: CampPayment },
+  { path: '/camps', name: 'camps.search', component: CampsSearch },
+  { path: '/camps/results', name: 'camps.results', component: CampsSearchResults },
+  { path: '/camps/details', name: 'camps.details', component: CampsDetails },
+  { path: '/camps/register', name: 'camps.register', redirect: { name: 'camps.register.parent1' } },
+  { path: '/camps/register/parent1', name: 'camps.register.parent1', component: CampsParent1 },
+  { path: '/camps/register/parent2', name: 'camps.register.parent2', component: CampsParent2 },
+  { path: '/camps/child-details', name: 'camps.child-details', component: CampsChild },
+  { path: '/camps/all-children', name: 'camps.all-children', component: CampsChildren },
+  { path: '/camps/select', name: 'camps.select', component: CampsSelect },
+  { path: '/camps/payment', name: 'camps.payment', component: CampsPayment },
+  { path: '/camps/success', name: 'camps.success', component: CampsSuccess },
 
   { path: '/login', name: 'login', component: Login },
   { path: '/register', name: 'register', component: Register },

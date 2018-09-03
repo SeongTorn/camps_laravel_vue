@@ -82,7 +82,7 @@ export default {
     }
   },
   computed: mapGetters({
-    parent: 'camp/parent'
+    parent: 'camps/parent'
   }),
   created() {
 
@@ -91,8 +91,8 @@ export default {
     register() {
       this.form = Object.assign({}, this.form, this.parent)
       axios.post('/api/register-parent', this.form).then(response => {
-        this.$store.dispatch('camp/setParent', {parent: response.data});
-        this.$router.push({name: 'camp.child-details'})
+        this.$store.dispatch('camps/setParent', {parent: response.data});
+        this.$router.push({name: 'camps.child-details'})
       }).catch(error => {
         console.error(error.message);
       });

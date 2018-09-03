@@ -100,9 +100,9 @@ export default {
   computed: {
     ...mapGetters({
       isLoggedin: 'auth/check',
-      camps: 'camp/camps',
-      camp_id: 'camp/camp_id',
-      post: 'camp/post'
+      camps: 'camps/camps',
+      camp_id: 'camps/camp_id',
+      post: 'camps/post'
     }),
     cur_camp() {
       let me = this;
@@ -132,7 +132,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('camp/fetchLocationCamps', {post_id: this.post.id})
+    this.$store.dispatch('camps/fetchLocationCamps', {post_id: this.post.id})
   },
   methods: {
     changeLocation(e) {
@@ -144,11 +144,11 @@ export default {
     },
     next() {
       if (this.selected_id) {
-        this.$store.dispatch('camp/setCampId', {camp_id: this.selected_id})
+        this.$store.dispatch('camps/setCampId', {camp_id: this.selected_id})
       } else {
-        this.$store.dispatch('camp/setCampId', {camp_id: this.cur_camp.camp.id})
+        this.$store.dispatch('camps/setCampId', {camp_id: this.cur_camp.camp.id})
       }
-      this.$router.push({name: 'camp.payment'});
+      this.$router.push({name: 'camps.payment'});
     }
   }
 }

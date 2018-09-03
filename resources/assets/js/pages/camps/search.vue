@@ -51,8 +51,8 @@ export default {
       });
     },
     search() {
-      this.$store.dispatch('camp/setPost', {post: this.sel_post})
-      this.$router.push({name: 'camp.results'})
+      this.$store.dispatch('camps/setPost', {post: this.sel_post})
+      this.$router.push({name: 'camps.results'})
     }
   },
   watch: {

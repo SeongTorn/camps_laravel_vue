@@ -75,7 +75,7 @@ export default {
     }
   },
   computed: mapGetters({
-    camps: 'camp/camps'
+    camps: 'camps/camps'
   }),
   created() {
     // console.log(this.location)
@@ -84,8 +84,8 @@ export default {
   methods: {
     next() {
       console.log(this.form);
-      this.$store.dispatch('camp/setParent', {parent: this.form});
-      this.$router.push({name: 'camp.register.parent2'});
+      this.$store.dispatch('camps/setParent', {parent: this.form});
+      this.$router.push({name: 'camps.register.parent2'});
     }
   }
 }

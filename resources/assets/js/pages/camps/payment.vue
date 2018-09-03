@@ -108,15 +108,17 @@ export default {
       stripe_data: {
         stripeToken: null,
         stripeEmail: '',
-        amount: 0
+        amount: 0,
+        gift_used: 0
       }
     }
   },
   computed: {
     ...mapGetters({
       isLoggedin: 'auth/check',
-      parent: 'camp/parent',
-      post: 'camp/post'
+      parent: 'camps/parent',
+      camp_id: 'camps/camp_id',
+      post: 'camps/post'
     }),
     cur_camp() {
 
@@ -168,12 +170,16 @@ export default {
       this.stripe_data.amount = this.pay_amount;
       axios.post('/api/stripe-create-charge', this.stripe_data).then(response => {
         console.log(response.data);
+        this.savePaymentDetail();
       }).catch(error => {
         console.log(error.message);
       })
     },
+    savePaymentDetail() {
+      this.$router.push({name: 'camps.success'});
+    },
     back() {
-      this.$router.push({name: 'camp.select'});
+      this.$router.push({name: 'camps.select'});
     }
   }
 }

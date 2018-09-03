@@ -51,14 +51,14 @@ import axios from 'axios';
 
 export default {
   computed: mapGetters({
-    parent: 'camp/parent',
-    children: 'camp/children',
+    parent: 'camps/parent',
+    children: 'camps/children',
     isLoggedin: 'auth/check'
   }),
   created() {
     console.log(this.isLoggedin)
     if (this.isLoggedin) {
-      this.$store.dispatch('camp/fetchChildren', {parent_id: this.parent.id});
+      this.$store.dispatch('camps/fetchChildren', {parent_id: this.parent.id});
     }
     // this.$store.dispatch('camp/fetchLocationCamps', {post_id: this.location.id})
   },
@@ -66,17 +66,17 @@ export default {
     remove(id) {
       axios.post('/api/deactive-child', {id: id}).then(response => {
         if (response.data.status == "success") {
-          this.$store.dispatch('camp/fetchChildren', {parent_id: this.parent.id});
+          this.$store.dispatch('camps/fetchChildren', {parent_id: this.parent.id});
         }
       }).catch(error => {
         console.error(error.message);
       });
     },
     addchild() {
-      this.$router.push({name: 'camp.child-details'});
+      this.$router.push({name: 'camps.child-details'});
     },
     next() {
-      this.$router.push({name: 'camp.select'});
+      this.$router.push({name: 'camps.select'});
     }
   }
 }
