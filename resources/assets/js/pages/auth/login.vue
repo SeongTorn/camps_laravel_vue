@@ -1,71 +1,64 @@
 <template>
-  <div class="row">
-    <div class="col-lg-8 m-auto">
-      <card :title="$t('login')">
-        <form @submit.prevent="login" @keydown="form.onKeydown($event)">
-          <!-- Email -->
-          <div class="form-group row">
-            <label class="col-md-3 col-form-label text-md-right">{{ $t('email') }}</label>
-            <div class="col-md-7">
-              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email">
-              <has-error :form="form" field="email"/>
-            </div>
-          </div>
+  <div>
+    <top-space>
+      <div slot="title"><br><br>Log In</div>
+      <div slot="sub-title">Enrol Faster &amp; Easier</div>
+    </top-space>
 
-          <!-- Password -->
-          <div class="form-group row">
-            <label class="col-md-3 col-form-label text-md-right">{{ $t('password') }}</label>
-            <div class="col-md-7">
-              <input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password">
-              <has-error :form="form" field="password"/>
-            </div>
-          </div>
-
-          <!-- Remember Me -->
-          <div class="form-group row">
-            <div class="col-md-3"/>
-            <div class="col-md-7 d-flex">
-              <checkbox v-model="remember" name="remember">
-                {{ $t('remember_me') }}
-              </checkbox>
-
-              <router-link :to="{ name: 'password.request' }" class="small ml-auto my-auto">
-                {{ $t('forgot_password') }}
+    <form @submit.prevent="login" @keydown="form.onKeydown($event)">
+    <section class="mbr-section article content1 cid-qZDAwC1GdG" id="content1-aw">
+			<div>
+				<div class="media-container-row">
+					<div class="mbr-text col-12 col-md-8 mbr-fonts-style display-7">
+						<div class="col-md-12" data-for="name">
+							<div class="form-group">
+								<label class="form-control-label mbr-fonts-style display-7" for="name-form1-9a">Email*</label>
+								<input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email" required="" placeholder="example@example.com" id="name-form1-9a-1">
+                <has-error :form="form" field="email"/>
+                <!--<input type="email" class="form-control" name="name" data-form-field="Name" required="" placeholder="example@example.com" id="name-form1-9a-1"> -->
+							</div>
+						</div>
+						<div class="col-md-12" data-for="name">
+							<div class="form-group">
+								<label class="form-control-label mbr-fonts-style display-7" for="name-form1-9a">Password*</label>
+								<input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password">
+                <has-error :form="form" field="password"/>
+								<!--<input type="password" class="form-control" name="name" data-form-field="Name" required="" placeholder="Password" id="name-form1-9a-2"> -->
+							</div>
+						</div>
+						<div class="col-md-12">
+              <router-link :to="{ name: 'camps.password.request' }" class="small ml-auto my-auto">
+                I have forgotten my password !
               </router-link>
-            </div>
-          </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-          <div class="form-group row">
-            <div class="col-md-7 offset-md-3 d-flex">
-              <!-- Submit Button -->
-              <v-button :loading="form.busy">
-                {{ $t('login') }}
+    <section class="mbr-section content8 cid-qZDAwCi9Op" id="content8-ax">
+			<div class="container">
+				<div class="media-container-row title">
+					<div class="col-12 col-md-8">
+						<div class="mbr-section-btn align-center">
+              <v-button :loading="form.busy" class="btn btn-secondary display-4 btn-radius">
+                <span class="mbrib-login mbr-iconfont mbr-iconfont-btn"></span>
+								Login
               </v-button>
-
-              <!-- GitHub Login Button -->
-              <login-with-github/>
-            </div>
-          </div>
-        </form>
-      </card>
-    </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+    </form>
   </div>
 </template>
 
 <script>
 import Form from 'vform'
-import LoginWithGithub from '~/components/LoginWithGithub'
 
 export default {
   middleware: 'guest',
-
-  components: {
-    LoginWithGithub
-  },
-
-  metaInfo () {
-    return { title: this.$t('login') }
-  },
 
   data: () => ({
     form: new Form({
@@ -90,7 +83,7 @@ export default {
       await this.$store.dispatch('auth/fetchUser')
 
       // Redirect home.
-      this.$router.push({ name: 'home' })
+      this.$router.push({name: 'camps.all-children'});
     }
   }
 }

@@ -6,7 +6,7 @@
 
     <section class="mbr-section article content1 cid-qZDljz1dnu" id="content1-a5">
       <div class="mbr-text col-12 col-md-12 mbr-fonts-style display-7">
-        <h2>TOTAL: ${{ pay_amount }}</h2>
+        <h2>TOTAL: ${{ total_fee }}</h2>
       </div>
     </section>
 
@@ -50,26 +50,13 @@
                 <th>Camp</th>
                 <th>Price</th>
               </tr>
-              <tr>
-                <td>Joshua Brooks</td>
-                <td>Game Making Mania - The Ponds High School</td>
-                <td>$99</td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>Minecraft Modding Mayhem - The Ponds High School</td>
-                <td>$99</td>
-              </tr>
-              <tr>
-                <td>Lachlan Brooks</td>
-                <td>Minecraft Modding Mayhem - The Ponds High School</td>
-                <td>$99</td>
+              <tr v-for="(enrol, index) in enrols" :key="index">
+                <td>{{ enrol.child_name }}</td>
+                <td>{{ enrol.camp_name }}</td>
+                <td>${{ enrol.fee }}</td>
               </tr>
             </table>
-            <p><br></p>
-            <p><br></p>
-            <p><br></p>
-            <p><br></p>
+            <p v-for="i in 4" :key="i"><br></p>
           </div>
         </div>
       </div>
@@ -104,7 +91,7 @@ export default {
       selected_id: this.camp_id,
       gift_code: '',
       gift_amount: 0,
-      pay_amount: 200,
+      pay_amount: 0,
       stripe_data: {
         stripeToken: null,
         stripeEmail: '',
@@ -117,14 +104,15 @@ export default {
     ...mapGetters({
       isLoggedin: 'auth/check',
       parent: 'camps/parent',
-      camp_id: 'camps/camp_id',
-      post: 'camps/post'
+      post: 'camps/post',
+      enrols: 'camps/enrols'
     }),
-    cur_camp() {
-
-    },
+    total_fee() {
+      return this.enrols.reduce((acc, item) => acc + item.fee, 0);
+    }
   },
   created() {
+    console.log(this.enrols);
     // this.$store.dispatch('camp/fetchLocationCamps', {post_id: this.post.id})
   },
   methods: {
@@ -133,7 +121,6 @@ export default {
       axios.post('/api/check-gift-card', {code: this.gift_code, email: this.parent.email}).then(response => {
         if (response.data.valid) {
           this.gift_amount = response.data.amount;
-          this.pay_amount -= this.gift_amount;
         } else {
           console.log('invalid gift code');
         }
@@ -143,6 +130,7 @@ export default {
     },
     checkout(e) {
       e.preventDefault();
+      this.pay_amount = (this.total_fee - this.gift_amount) * 100;
       axios.post('/api/stripe-publish-key').then(response => {
         if (response.data.success == true) {
           console.log(response.data.key);
@@ -177,6 +165,12 @@ export default {
     },
     savePaymentDetail() {
       this.$router.push({name: 'camps.success'});
+      axios.post('/api/save-payment', {data: this.enrol}).then(response => {
+        console.log(response.data);
+        if (response.data.success == true) {
+
+        }
+      })
     },
     back() {
       this.$router.push({name: 'camps.select'});

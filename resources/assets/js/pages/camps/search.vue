@@ -50,9 +50,12 @@ export default {
         console.error(error.message);
       });
     },
-    search() {
-      this.$store.dispatch('camps/setPost', {post: this.sel_post})
-      this.$router.push({name: 'camps.results'})
+    search(e) {
+      e.preventDefault();
+      this.$store.dispatch('camps/initChildren');
+      this.$store.dispatch('camps/setPost', {post: this.sel_post}).then(() => {
+        this.$router.push({name: 'camps.results'});
+      });
     }
   },
   watch: {
@@ -65,6 +68,7 @@ export default {
   .list-group-item.active {
     background-color: #f5f5f5 !important;
     color: #565656 !important;
+    border-color: #f1f1f1 !important;
   }
 </style>
 

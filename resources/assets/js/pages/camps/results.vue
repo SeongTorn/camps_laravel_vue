@@ -53,14 +53,14 @@
                   <p class="mbr-section-text  align-center mbr-fonts-style display-7"><span class="mbri-sale">&nbsp;</span> ${{ camp.price }}</p>
                 </div>
                 <div class="mbr-section-btn text-center">
-                  <a href="#" class="btn btn-primary display-4" @click="detail(camp.id)">
+                  <a href="#" class="btn btn-primary display-4" @click="detail($event, camp.id)">
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <span class="mbrib-star mbr-iconfont mbr-iconfont-btn"></span>Learn More
                     &nbsp;&nbsp;&nbsp;&nbsp;
                   </a>
                 </div>
                 <div class="mbr-section-btn text-center">
-                  <a v-if="camp.class_capacity - camp.sold > 0" href="#" class="btn btn-secondary display-4" @click="register(camp.id)">
+                  <a v-if="camp.class_capacity - camp.sold > 0" href="#" class="btn btn-secondary display-4" @click="register($event, camp.id)">
                     &nbsp;&nbsp;
                     <span class="mbrib-rocket mbr-iconfont mbr-iconfont-btn"></span>Register Now
                     &nbsp;&nbsp;
@@ -137,11 +137,13 @@ export default {
     this.$store.dispatch('camps/fetchLocationCamps', {post_id: this.post.id})
   },
   methods: {
-    detail(id) {
+    detail(e, id) {
+      e.preventDefault();
       this.$store.dispatch('camps/setCampId', {camp_id: id})
       this.$router.push({name: 'camps.details'})
     },
-    register(id) {
+    register(e, id) {
+      e.preventDefault();
       this.$store.dispatch('camps/setCampId', {camp_id: id})
       this.$router.push({name: 'camps.register'});
     }

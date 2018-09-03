@@ -1,30 +1,46 @@
 <template>
-  <div class="row">
-    <div class="col-lg-8 m-auto">
-      <card :title="$t('reset_password')">
-        <form @submit.prevent="send" @keydown="form.onKeydown($event)">
-          <alert-success :form="form" :message="status"/>
+  <div>
+    <top-space>
+      <div slot="title"><br><br>Forgot Password</div>
+    </top-space>
 
-          <!-- Email -->
-          <div class="form-group row">
-            <label class="col-md-3 col-form-label text-md-right">{{ $t('email') }}</label>
-            <div class="col-md-7">
-              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email">
-              <has-error :form="form" field="email"/>
+    <form @submit.prevent="send" @keydown="form.onKeydown($event)">
+    <section class="mbr-section article content1 cid-qZDAwC1GdG" id="content1-aw">
+      <div class="container">
+        <div class="media-container-row">
+          <div class="mbr-text col-12 col-md-8 mbr-fonts-style display-7">
+            <div class="col-md-12" data-for="name">
+              <div class="form-group">
+                <label class="form-control-label mbr-fonts-style display-7" for="name-form1-9a">Enter Email*</label>
+                <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email" required placeholder='example@example.com'>
+                <has-error :form="form" field="email"/>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <!-- Submit Button -->
-          <div class="form-group row">
-            <div class="col-md-9 ml-md-auto">
-              <v-button :loading="form.busy">
-                {{ $t('send_password_reset_link') }}
+    <section class="mbr-section content8 cid-qZDAwCi9Op" id="content8-ax">
+      <div class="container">
+        <div class="media-container-row title">
+          <div class="col-12 col-md-8">
+            <div class="mbr-section-btn align-center">
+              <v-button :loading="form.busy" class="btn btn-secondary display-4 btn-radius">
+                <span class="mbrib-login mbr-iconfont mbr-iconfont-btn"></span>
+                Send Reset Link
               </v-button>
+              <!-- <a class="btn btn-secondary display-4" href="https://mobirise.com">
+                <span class="mbrib-login mbr-iconfont mbr-iconfont-btn"></span>
+                {!! Form::submit('Send Reset Link', ['btn-submit']) !!}
+              </a> -->
             </div>
           </div>
-        </form>
-      </card>
-    </div>
+        </div>
+      </div>
+    </section>
+    </form>
+    <bottom-space/>
   </div>
 </template>
 

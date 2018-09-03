@@ -9,7 +9,7 @@
           </div>
           <div class="media-container-column col-12 col-lg-3 col-md-4">
             <div class="mbr-section-btn align-right py-4">
-              <a class="btn btn-primary display-4" href="#">
+              <a class="btn btn-primary display-4" href="#" @click="login">
                 <span class="mbrib-login mbr-iconfont mbr-iconfont-btn"></span>
                 Log In
               </a>
@@ -82,6 +82,10 @@ export default {
     // this.$store.dispatch('camp/fetchLocationCamps', {post_id: this.location.id})
   },
   methods: {
+    login(e) {
+      e.preventDefault();
+      this.$router.push({name: 'camps.login'});
+    },
     next() {
       console.log(this.form);
       this.$store.dispatch('camps/setParent', {parent: this.form});

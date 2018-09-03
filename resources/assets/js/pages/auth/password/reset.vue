@@ -1,48 +1,55 @@
 <template>
-  <div class="row">
-    <div class="col-lg-8 m-auto">
-      <card :title="$t('reset_password')">
-        <form @submit.prevent="reset" @keydown="form.onKeydown($event)">
-          <alert-success :form="form" :message="status"/>
+  <div>
+    <top-space>
+      <div slot="title"><br><br>Reset Password</div>
+    </top-space>
 
-          <!-- Email -->
-          <div class="form-group row">
-            <label class="col-md-3 col-form-label text-md-right">{{ $t('email') }}</label>
-            <div class="col-md-7">
-              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email" readonly>
-              <has-error :form="form" field="email"/>
+    <form @submit.prevent="reset" @keydown="form.onKeydown($event)">
+    <section class="mbr-section article content1 cid-qZDAwC1GdG" id="content1-aw">
+      <div class="container">
+        <div class="media-container-row">
+          <div class="mbr-text col-12 col-md-8 mbr-fonts-style display-7">
+            <div class="col-md-12" data-for="name">
+              <div class="form-group">
+                <label class="form-control-label mbr-fonts-style display-7" for="name-form1-9a">Email*</label>
+                <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email" readonly>
+                <has-error :form="form" field="email"/>
+              </div>
+            </div>
+            <div class="col-md-12" data-for="name">
+              <div class="form-group">
+                <label class="form-control-label mbr-fonts-style display-7" for="name-form1-9a">Password*</label>
+                <input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password" required="" placeholder="Password">
+                <has-error :form="form" field="password"/>
+              </div>
+            </div>
+            <div class="col-md-12" data-for="name">
+              <div class="form-group">
+                <label class="form-control-label mbr-fonts-style display-7" for="name-form1-9a">Confirm*</label>
+                <input v-model="form.password_confirmation" :class="{ 'is-invalid': form.errors.has('password_confirmation') }" class="form-control" type="password" name="password_confirmation" required="" placeholder="Confirm Password">
+                <has-error :form="form" field="password_confirmation"/>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <!-- Password -->
-          <div class="form-group row">
-            <label class="col-md-3 col-form-label text-md-right">{{ $t('password') }}</label>
-            <div class="col-md-7">
-              <input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password">
-              <has-error :form="form" field="password"/>
-            </div>
-          </div>
-
-          <!-- Password Confirmation -->
-          <div class="form-group row">
-            <label class="col-md-3 col-form-label text-md-right">{{ $t('confirm_password') }}</label>
-            <div class="col-md-7">
-              <input v-model="form.password_confirmation" :class="{ 'is-invalid': form.errors.has('password_confirmation') }" class="form-control" type="password" name="password_confirmation">
-              <has-error :form="form" field="password_confirmation"/>
-            </div>
-          </div>
-
-          <!-- Submit Button -->
-          <div class="form-group row">
-            <div class="col-md-9 ml-md-auto">
-              <v-button :loading="form.busy">
-                {{ $t('reset_password') }}
+    <section class="mbr-section content8 cid-qZDAwCi9Op" id="content8-ax">
+      <div class="container">
+        <div class="media-container-row title">
+          <div class="col-12 col-md-8">
+            <div class="mbr-section-btn align-center">
+              <v-button :loading="form.busy" class="btn btn-secondary display-4 btn-radius">
+                <span class="mbrib-login mbr-iconfont mbr-iconfont-btn"></span>Reset
               </v-button>
             </div>
           </div>
-        </form>
-      </card>
-    </div>
+        </div>
+      </div>
+    </section>
+    </form>
+    <bottom-space/>
   </div>
 </template>
 
@@ -74,9 +81,7 @@ export default {
   methods: {
     async reset () {
       const { data } = await this.form.post('/api/password/reset')
-
       this.status = data.status
-
       this.form.reset()
     }
   }

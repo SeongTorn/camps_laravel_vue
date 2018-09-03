@@ -2,8 +2,8 @@
   <div v-if="camps">
     <top-space/>
     <top-space>
-      <div slot="title">Camps for Joshua Brooks</div>
-      <div slot="sub-title">What camps do you want to register Joshua for?</div>
+      <div slot="title">Camps for {{ cur_enrol_id >= 0 ? enrols[cur_enrol_id].child_name : '' }}</div>
+      <div slot="sub-title">What camps do you want to register for?</div>
     </top-space>
 
     <section class="mbr-section article content1 cid-qRjNQCoqtg" id="content1-57">
@@ -69,7 +69,7 @@
         <div class="media-container-row title">
           <div class="col-12 col-md-8">
             <div class="mbr-section-btn align-center">
-              <a class="btn btn-black-outline display-4" href="https://mobirise.com">
+              <a class="btn btn-black-outline display-4" href="#" @click="back">
                 <span class="mbri-left mbr-iconfont mbr-iconfont-btn"></span>
                 BACK
               </a>
@@ -94,30 +94,34 @@ export default {
   data() {
     return {
       location_id: 0,
-      selected_id: this.camp_id,
+      selected_id: 0,
+      enrol_data: {
+        id: -1,
+        child_id: 0,
+        camp_id: 0,
+        camp_name: '',
+        fee: 0
+      }
     }
   },
   computed: {
     ...mapGetters({
-      isLoggedin: 'auth/check',
+      post: 'camps/post',
       camps: 'camps/camps',
-      camp_id: 'camps/camp_id',
-      post: 'camps/post'
+      enrols: 'camps/enrols',
+      children: 'camps/children'
     }),
     cur_camp() {
       let me = this;
-      console.log(this.camp_id);
       let item = this.camps.find(function(item){
         let camp = item.camps.find(function(item){
-          return item.id == me.camp_id;
+          return item.id == me.selected_id;
         })
         return !!camp;
       });
-      console.log(item);
       let camp = item.camps.find(function(camp){
-        return camp.id == me.camp_id;
+        return camp.id == me.selected_id;
       })
-      // console.log(camp);
       return {location: item.location, camp: camp};
     },
     location_camps() {
@@ -129,9 +133,23 @@ export default {
         return filter_arr[0].camps;
       }
       return [];
+    },
+    cur_enrol_id() {
+      let enrol_id = -1;
+      this.enrols.filter((item, index) => {
+        if (item.selecting) {
+          enrol_id = index;
+        }
+        return true;
+      })
+      console.log('cur_enrol_id: ' + enrol_id);
+      return enrol_id;
     }
   },
   created() {
+    console.log(this.enrols);
+    this.selected_id = this.enrols[this.cur_enrol_id].camp_id;
+    console.log('selected_id: ' + this.selected_id);
     this.$store.dispatch('camps/fetchLocationCamps', {post_id: this.post.id})
   },
   methods: {
@@ -143,12 +161,33 @@ export default {
       this.selected_id = id;
     },
     next() {
-      if (this.selected_id) {
-        this.$store.dispatch('camps/setCampId', {camp_id: this.selected_id})
-      } else {
-        this.$store.dispatch('camps/setCampId', {camp_id: this.cur_camp.camp.id})
-      }
-      this.$router.push({name: 'camps.payment'});
+      this.enrol_data.id = this.cur_enrol_id;
+      this.enrol_data.camp_id = this.selected_id;
+      this.enrol_data.fee = this.cur_camp.camp.price;
+      this.enrol_data.camp_name = this.cur_camp.camp.name;
+      this.enrol_data.next_id = this.cur_enrol_id < this.enrols.length - 1 ? this.cur_enrol_id + 1 : this.cur_enrol_id;
+      this.$store.dispatch('camps/setEnrol', {enrol: this.enrol_data}).then(response => {
+        if (this.enrol_data.next_id == this.enrol_data.id) {
+          this.$router.push({name: 'camps.payment'});
+        } else {
+          this.selected_id = this.enrols[this.enrol_data.next_id].camp_id ? this.enrols[this.enrol_data.next_id].camp_id : this.selected_id;
+          this.$router.push({name: 'camps.select'});
+        }
+      })
+    },
+    back() {
+      this.enrol_data.id = this.cur_enrol_id;
+      this.enrol_data.camp_id = this.selected_id;
+      this.enrol_data.fee = this.cur_camp.camp.price;
+      this.enrol_data.next_id = this.cur_enrol_id > 0 ? this.cur_enrol_id - 1 : 0;
+      this.$store.dispatch('camps/setEnrol', {enrol: this.enrol_data}).then(response => {
+        if (this.enrol_data.next_id == this.enrol_data.id) {
+          this.$router.push({name: 'camps.all-children'});
+        } else {
+          this.selected_id = this.enrols[this.enrol_data.next_id].camp_id ? this.enrols[this.enrol_data.next_id].camp_id : this.selected_id;
+          this.$router.replace({name: 'camps.select'});
+        }
+      })
     }
   }
 }

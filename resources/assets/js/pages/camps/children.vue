@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="children">
     <section class="mbr-section content4 cid-qRjMf7pfgj">
       <div class="container">
         <div class="media-container-row">
@@ -53,10 +53,11 @@ export default {
   computed: mapGetters({
     parent: 'camps/parent',
     children: 'camps/children',
+    camp_id: 'camps/camp_id',
     isLoggedin: 'auth/check'
   }),
   created() {
-    console.log(this.isLoggedin)
+    // console.log(this.isLoggedin)
     if (this.isLoggedin) {
       this.$store.dispatch('camps/fetchChildren', {parent_id: this.parent.id});
     }
@@ -66,7 +67,8 @@ export default {
     remove(id) {
       axios.post('/api/deactive-child', {id: id}).then(response => {
         if (response.data.status == "success") {
-          this.$store.dispatch('camps/fetchChildren', {parent_id: this.parent.id});
+          // this.$store.dispatch('camps/fetchChildren', {parent_id: this.parent.id});
+          this.$store.dispatch('camps/removeChild', {child_id: id});
         }
       }).catch(error => {
         console.error(error.message);
@@ -76,6 +78,7 @@ export default {
       this.$router.push({name: 'camps.child-details'});
     },
     next() {
+      this.$store.dispatch('camps/initEnrols', {camp_id: this.camp_id});
       this.$router.push({name: 'camps.select'});
     }
   }

@@ -574,7 +574,7 @@
           </div>
           <div class="media-container-column title col-12 col-lg-7 col-md-6">
             <h2 class="align-right mbr-bold mbr-white pb-3 mbr-fonts-style display-2">FUN + EDUCATION</h2>
-            <h3 class="mbr-section-subtitle align-right mbr-light mbr-white mbr-fonts-style display-5">Enrol Now - Only 7 Places Remaining</h3>
+            <h3 class="mbr-section-subtitle align-right mbr-light mbr-white mbr-fonts-style display-5">Enrol Now - Only {{ camp.class_capacity - camp.sold > 0 ? camp.class_capacity - camp.sold : 0 }}  Places Remaining</h3>
           </div>
         </div>
       </div>
