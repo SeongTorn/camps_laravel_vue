@@ -20,7 +20,7 @@
     </section>
 
     <div v-for="camp_list in camps" :key="camp_list.location.id">
-      <section class="mbr-section info1 cid-qQWMc4sypE" id="info1-r">
+      <section id="next" class="mbr-section info1 cid-qQWMc4sypE">
         <div class="container">
           <div class="row justify-content-center content-row">
             <div class="media-container-column title col-12 col-lg-7 col-md-6">
