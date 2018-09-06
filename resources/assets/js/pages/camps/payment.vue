@@ -26,17 +26,21 @@
     </section>
 
     <section class="mbr-section article content1 cid-qZDljz1dnu">
+      <form @submit.prevent="apply" @keydown="form.onKeydown($event)">
       <div class="container">
         <div class="media-container-row">
           <div class="mbr-text col-12 col-md-4 mbr-fonts-style display-7">
             <p>Gift Card/Voucher Code:</p>
             <input type="text" class="form-control" v-model="gift_code">
-            <a href="" class="btn btn-primary btn-form display-4" @click="applyGiftCard">Apply</a>
+            <v-button :loading="form.busy" class="btn btn-primary btn-form display-4 btn-radius">
+              Apply
+            </v-button>
             <p><br></p>
             <p><br></p>
           </div>
         </div>
       </div>
+      </form>
     </section>
 
     <section class="mbr-section article content1 cid-qZDmUrxXz0">
@@ -77,6 +81,7 @@
       </div>
     </section>
     <bottom-space/>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"></simplert>
   </div>
 </template>
 
@@ -97,6 +102,14 @@ export default {
         stripeEmail: '',
         amount: 0,
         gift_used: 0
+      },
+      form: {
+        busy: false
+      },
+      msg: {
+        title: 'Alert Title',
+        message: 'Alert Message',
+        type: 'error'
       }
     }
   },
@@ -116,15 +129,26 @@ export default {
     // this.$store.dispatch('camp/fetchLocationCamps', {post_id: this.post.id})
   },
   methods: {
-    applyGiftCard(e) {
-      e.preventDefault();
+    apply() {
+      if (!this.gift_code) {
+        this.msg.title = 'Warning';
+        this.msg.type = 'warning';
+        this.msg.message = 'Please input your Gift Card/Voucher Code';
+        this.showMessage();
+        return ;
+      }
+      this.form.busy = true;
       axios.post('/api/check-gift-card', {code: this.gift_code, email: this.parent.email}).then(response => {
+        this.form.busy = false;
         if (response.data.valid) {
           this.gift_amount = response.data.amount;
         } else {
-          console.log('invalid gift code');
+          this.msg.title = 'Error';
+          this.msg.message = 'Invalid Gift Card/Voucher code';
+          this.showMessage();
         }
       }).catch(error => {
+        this.form.busy = false;
         console.error(error.message);
       });
     },
@@ -174,6 +198,9 @@ export default {
     },
     back() {
       this.$router.push({name: 'camps.select'});
+    },
+    showMessage() {
+      this.$refs.simplert.openSimplert(this.msg);
     }
   }
 }

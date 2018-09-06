@@ -43,12 +43,10 @@
               <a href="https://learncode.com.au/blog/terms-and-conditions/">terms and conditions</a>
               .<br><br>
 
-              <span class="input-group-btn">
-                <button class="btn btn-primary btn-form display-4" :disabled="!agree">Next</button>
-              </span>
-              <br>
-              <br>
-              <br>
+              <v-button class="btn btn-form btn-primary display-4" :loading="form.busy" :disabled="!agree">
+                Next
+              </v-button>
+              <br v-for="i in 3" :key="i">
             </div>
           </div>
         </div>
@@ -57,12 +55,14 @@
     </section>
     <safety-space/>
     <bottom-space/>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"></simplert>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import axios from 'axios';
+import Form from 'vform'
 
 export default {
   data() {
@@ -71,14 +71,20 @@ export default {
         emergency_contact: '',
         postcode: '',
         heard_about: 0,
-        photos_permitted: true
+        photos_permitted: true,
+        busy: false
       },
       agree: false,
       heard_options: [
         {value: 1, name: 'Saab'},
         {value: 2, name: 'Mercedes'},
         {value: 3, name: 'Audi'}
-      ]
+      ],
+      msg: {
+        title: 'Alert Title',
+        message: 'Alert Message',
+        type: 'error'
+      }
     }
   },
   computed: mapGetters({
@@ -89,13 +95,28 @@ export default {
   },
   methods: {
     register() {
+      this.form.busy = true;
       this.form = Object.assign({}, this.form, this.parent)
       axios.post('/api/register-parent', this.form).then(response => {
-        this.$store.dispatch('camps/setParent', {parent: response.data});
-        this.$router.push({name: 'camps.child-details'})
+        this.$store.dispatch('camps/setParent', {parent: response.data}).then(() => {
+          this.form.busy = false;
+          this.$router.push({name: 'camps.child-details'})
+        }).catch(error => {
+          this.form.busy = false;
+          this.msg.title = 'Set Parent Info Error';
+          this.msg.message = error;
+          this.showMessage();
+        });
+
       }).catch(error => {
-        console.error(error.message);
+        this.msg.title = 'Set Parent Info Error';
+        this.msg.message = 'Error in call api to register parent details';
+        this.showMessage();
+        this.form.busy = false;
       });
+    },
+    showMessage() {
+      this.$refs.simplert.openSimplert(this.msg);
     }
   }
 }

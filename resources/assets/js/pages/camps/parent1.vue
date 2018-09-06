@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="mbr-section info1 cid-qZCLOV2j2S" style="margin-top: 145px !important;">
-      <form @submit.prevent="next">
+      <form @submit.prevent="next" @keydown="form.onKeydown($event)">
       <div class="container">
         <div class="row justify-content-center content-row">
           <div class="media-container-column title col-12 col-lg-7 col-md-6">
@@ -43,7 +43,9 @@
             <div class="form-group">
               <br>
               <span class="input-group-btn">
-                <button class="btn btn-primary btn-form display-4">Next</button>
+                <v-button :loading="form.busy" class="btn btn-form btn-primary display-4">
+                  Next
+                </v-button>
               </span>
               <br>
               <br>
@@ -56,21 +58,29 @@
     </section>
     <safety-space/>
     <bottom-space/>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"></simplert>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import axios from 'axios';
+import Form from 'vform'
 
 export default {
   data() {
     return {
-      form: {
+      form: new Form({
         first_name: '',
         last_name: '',
         email: '',
-        phone: ''
+        phone: '',
+        busy: false
+      }),
+      msg: {
+        title: 'Alert Title',
+        message: 'Alert Message',
+        type: 'error'
       }
     }
   },
@@ -87,9 +97,38 @@ export default {
       this.$router.push({name: 'camps.login'});
     },
     next() {
-      console.log(this.form);
-      this.$store.dispatch('camps/setParent', {parent: this.form});
-      this.$router.push({name: 'camps.register.parent2'});
+      // console.log(this.form);
+      this.form.busy = true;
+      axios.post('/api/subscribe', {email: this.form.email}).then(response => {
+        // console.log(response.data);
+        if (response.data.success == true) {
+          axios.post('/api/add-to-drip', {email: this.form.email}).then(response => {
+            // console.log(response.data);
+            this.form.busy = false;
+            if (response.data.success) {
+              this.$store.dispatch('camps/setParent', {parent: this.form}).then(() => {
+                this.$router.push({name: 'camps.register.parent2'});
+              }).catch(error => {
+                this.msg.title = 'Set Parent Info Error';
+                this.msg.message = error;
+                this.showMessage();
+              });
+            } else {
+              this.msg.title = 'Drip Error';
+              this.msg.message = 'Some error occured during add drip action';
+              this.showMessage();
+            }
+          })
+        } else {
+          this.msg.title = 'Subscribe Error';
+          this.msg.message = 'Some error occured during subscribe action';
+          this.showMessage();
+          this.form.busy = false;
+        }
+      });
+    },
+    showMessage() {
+      this.$refs.simplert.openSimplert(this.msg);
     }
   }
 }

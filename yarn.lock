@@ -8283,6 +8283,16 @@ vue-template-es2015-compiler@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.6.0.tgz#dc42697133302ce3017524356a6c61b7b69b4a18"
 
+vue2-simplert-core@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/vue2-simplert-core/-/vue2-simplert-core-1.0.3.tgz#dc1a7ea2a54472b68414e6af65782a62ebdeb21b"
+
+vue2-simplert-plugin@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/vue2-simplert-plugin/-/vue2-simplert-plugin-0.4.1.tgz#e7ec75b28fb3f84b4dab18d3d279496a91b79003"
+  dependencies:
+    vue2-simplert-core "1.0.3"
+
 vue@^2.5.16:
   version "2.5.16"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.16.tgz#07edb75e8412aaeed871ebafa99f4672584a0085"

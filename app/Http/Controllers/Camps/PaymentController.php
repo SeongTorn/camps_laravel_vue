@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Camp;
+namespace App\Http\Controllers\Camps;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

@@ -77,7 +77,9 @@
             <div class="form-group">
               <br>
               <span class="input-group-btn">
-                <button class="btn btn-primary btn-form display-4">Next</button>
+                <v-button class="btn btn-form btn-primary display-4" :loading="form.busy">
+                  Next
+                </v-button>
               </span>
               <br><br><br>
             </div>
@@ -88,12 +90,14 @@
     </section>
     <safety-space/>
     <bottom-space/>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"></simplert>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import axios from 'axios';
+import Form from 'vform'
 
 export default {
   data() {
@@ -106,7 +110,13 @@ export default {
         birth_year: '',
         school: '',
         allergies: '',
-        learning_difficulties: ''
+        learning_difficulties: '',
+        busy: false
+      },
+      msg: {
+        title: 'Alert Title',
+        message: 'Alert Message',
+        type: 'error'
       },
       month_names: ["January", "February", "March", "April", "May","June","July", "August", "September", "October", "November","December"]
     }
@@ -120,14 +130,27 @@ export default {
   },
   methods: {
     register() {
+      this.form.busy = true;
       this.form = Object.assign({}, this.form, {parent_id: this.parent.id})
-      console.log(this.form);
       axios.post('/api/register-child', this.form).then(response => {
-        this.$store.dispatch('camps/addChildren', {child: response.data});
-        this.$router.push({name: 'camps.all-children'})
+        this.$store.dispatch('camps/addChildren', {child: response.data}).then(() => {
+          this.form.busy = false;
+          this.$router.push({name: 'camps.all-children'})
+        }).catch(error => {
+          this.form.busy = false;
+          this.msg.title = 'Add Children Error';
+          this.msg.message = error;
+          this.showMessage();
+        });
       }).catch(error => {
-        console.error(error.message);
+        this.form.busy = false;
+        this.msg.title = 'API call error';
+        this.msg.message = 'Error occured in calling api';
+        this.showMessage();
       });
+    },
+    showMessage() {
+      this.$refs.simplert.openSimplert(this.msg);
     }
   }
 }

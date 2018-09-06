@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Camp;
+namespace App\Http\Controllers\Camps;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Camp\PostController;
+use App\Http\Controllers\Camps\PostController;
 use App\Models\ParentDetail;
 use App\Models\ChildDetail;
 use App\Models\GiftCard;

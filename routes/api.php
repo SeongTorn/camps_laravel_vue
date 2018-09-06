@@ -34,13 +34,18 @@ Route::group(['middleware' => 'guest:api'], function () {
   Route::get('oauth/{driver}/callback', 'Auth\OAuthController@handleProviderCallback')->name('oauth.callback');
 });
 
-Route::post('postcodes', 'Camp\PostController@getPostCodes');
-Route::post('camps', 'Camp\CampController@getLocationCamps');
-Route::post('children', 'Camp\CampController@getChildren');
-Route::post('details', 'Camp\CampController@getCampDetails');
-Route::post('register-parent', 'Camp\CampController@saveParentDetails');
-Route::post('register-child', 'Camp\CampController@saveChildDetails');
-Route::post('deactive-child', 'Camp\CampController@deactiveChild');
-Route::post('check-gift-card', 'Camp\CampController@checkGiftCard');
-Route::post('stripe-publish-key', 'Camp\PaymentController@stripePublishKey');
-Route::post('stripe-create-charge', 'Camp\PaymentController@stripeCreateCharge');
+Route::post('postcodes', 'Camps\PostController@getPostCodes');
+Route::post('camps', 'Camps\CampController@getLocationCamps');
+Route::post('children', 'Camps\CampController@getChildren');
+Route::post('details', 'Camps\CampController@getCampDetails');
+Route::post('register-parent', 'Camps\CampController@saveParentDetails');
+Route::post('register-child', 'Camps\CampController@saveChildDetails');
+Route::post('deactive-child', 'Camps\CampController@deactiveChild');
+Route::post('check-gift-card', 'Camps\CampController@checkGiftCard');
+Route::post('stripe-publish-key', 'Camps\PaymentController@stripePublishKey');
+Route::post('stripe-create-charge', 'Camps\PaymentController@stripeCreateCharge');
+
+Route::post('subscribe',['as'=>'subscribe','uses'=>'Camps\MailChimpController@subscribe']);
+Route::post('add-to-drip',['as'=>'add-to-drip','uses'=>'Camps\DripController@addUserToDrip']);
+Route::post('update-from-drip',['as'=>'update-from-drip','uses'=>'Camps\DripController@updateUserFromDrip']);
+Route::post('remove-from-drip',['as'=>'remove-from-drip','uses'=>'Camps\DripController@removeUserFromDrip']);

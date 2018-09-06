@@ -4,6 +4,8 @@ import router from '~/router'
 import i18n from '~/plugins/i18n'
 import App from '~/components/App'
 import VueStripeCheckout from 'vue-stripe-checkout';
+import Simplert from 'vue2-simplert-plugin'
+require('vue2-simplert-plugin/dist/vue2-simplert-plugin.css')
 
 import '~/plugins'
 import '~/components'
@@ -24,6 +26,7 @@ const options = {
 }
 
 Vue.use(VueStripeCheckout, options);
+Vue.use(Simplert)
 
 /* eslint-disable no-new */
 new Vue({

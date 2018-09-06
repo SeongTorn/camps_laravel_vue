@@ -83,6 +83,7 @@
       </div>
     </section>
     <bottom-space/>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"></simplert>
   </div>
 </template>
 
@@ -101,6 +102,11 @@ export default {
         camp_id: 0,
         camp_name: '',
         fee: 0
+      },
+      msg: {
+        title: 'Alert Title',
+        message: 'Alert Message',
+        type: 'error'
       }
     }
   },
@@ -188,6 +194,9 @@ export default {
           this.$router.replace({name: 'camps.select'});
         }
       })
+    },
+    showMessage() {
+      this.$refs.simplert.openSimplert(this.msg);
     }
   }
 }

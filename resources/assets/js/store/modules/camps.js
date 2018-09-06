@@ -116,7 +116,14 @@ export const actions = {
     commit(types.SET_CAMPID, camp_id)
   },
   setParent ({ commit }, parent) {
-    commit(types.SET_PARENT, parent)
+    return new Promise((resolve, reject) => {
+      if (parent) {
+        commit(types.SET_PARENT, parent)
+        resolve()
+      } else {
+        reject({error: 'cannot set parent info with null'})
+      }
+    })
   },
   addChildren ({ commit }, child) {
     commit(types.ADD_CHILD, child)
@@ -134,7 +141,14 @@ export const actions = {
     })
   },
   initEnrols ({ commit }, camp_id) {
-    commit(types.INIT_ENROLS, camp_id)
+    return new Promise((resolve, reject) => {
+      if (camp_id > 0) {
+        commit(types.INIT_ENROLS, camp_id)
+        resolve()
+      } else {
+        reject({error: 'camp id is invalid'})
+      }
+    })
   },
   initChildren({ commit }) {
     commit(types.INIT_CHILDREN)

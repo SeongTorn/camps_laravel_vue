@@ -10,8 +10,11 @@
     "laravel/framework": "5.6.*",
     "laravel/socialite": "^3.0",
     "laravel/tinker": "~1.0",
+    "skovmand/mailchimp-laravel": "^1.0",
+    "spatie/laravel-newsletter": "^4.2",
     "stripe/stripe-php": "^6.16",
-    "tymon/jwt-auth": "^1.0.0-rc.2"
+    "tymon/jwt-auth": "^1.0.0-rc.2",
+    "wouternl/laravel-drip": "^1.1"
   },
   "require-dev": {
     "filp/whoops": "^2.0",

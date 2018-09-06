@@ -42,6 +42,7 @@
       </div>
     </section>
     <bottom-space/>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"></simplert>
   </div>
 </template>
 
@@ -50,6 +51,15 @@ import { mapGetters } from 'vuex'
 import axios from 'axios';
 
 export default {
+  data() {
+    return {
+      msg: {
+        title: 'Alert Title',
+        message: 'Alert Message',
+        type: 'error'
+      }
+    }
+  },
   computed: mapGetters({
     parent: 'camps/parent',
     children: 'camps/children',
@@ -67,7 +77,6 @@ export default {
     remove(id) {
       axios.post('/api/deactive-child', {id: id}).then(response => {
         if (response.data.status == "success") {
-          // this.$store.dispatch('camps/fetchChildren', {parent_id: this.parent.id});
           this.$store.dispatch('camps/removeChild', {child_id: id});
         }
       }).catch(error => {
@@ -78,8 +87,16 @@ export default {
       this.$router.push({name: 'camps.child-details'});
     },
     next() {
-      this.$store.dispatch('camps/initEnrols', {camp_id: this.camp_id});
-      this.$router.push({name: 'camps.select'});
+      this.$store.dispatch('camps/initEnrols', {camp_id: this.camp_id}).then(() => {
+        this.$router.push({name: 'camps.select'});
+      }).catch(error => {
+        this.msg.title = 'Init Enrol Data Error',
+        this.msg.message = error;
+        this.showMessage();
+      });
+    },
+    showMessage() {
+      this.$refs.simplert.openSimplert(this.msg);
     }
   }
 }
