@@ -133,19 +133,19 @@ export default {
       this.form.busy = true;
       this.form = Object.assign({}, this.form, {parent_id: this.parent.id})
       axios.post('/api/register-child', this.form).then(response => {
-        this.$store.dispatch('camps/addChildren', {child: response.data}).then(() => {
-          this.form.busy = false;
-          this.$router.push({name: 'camps.all-children'})
-        }).catch(error => {
-          this.form.busy = false;
-          this.msg.title = 'Add Children Error';
-          this.msg.message = error;
-          this.showMessage();
-        });
+        return this.$store.dispatch('camps/addChildren', {child: response.data});
       }).catch(error => {
         this.form.busy = false;
         this.msg.title = 'API call error';
         this.msg.message = 'Error occured in calling api';
+        this.showMessage();
+      }).then(() => {
+        this.form.busy = false;
+        this.$router.push({name: 'camps.all-children'})
+      }).catch(error => {
+        this.form.busy = false;
+        this.msg.title = 'Add Children Error';
+        this.msg.message = error;
         this.showMessage();
       });
     },

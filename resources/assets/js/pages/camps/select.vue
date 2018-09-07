@@ -12,7 +12,7 @@
           <div class="mbr-text col-12 col-md-8 mbr-fonts-style display-5">
             <p><strong>Select a Location:</strong></p>
             <p>
-              <select ref="select_location" class="form-control" :value="this.cur_camp.location ? this.cur_camp.location.id : 0" required="" @change="changeLocation">
+              <select ref="select_location" class="form-control" :value="this.location_id ? this.location_id : (this.cur_camp.location ? this.cur_camp.location.id : 0)" required="" @change="changeLocation">
                 <option value="0" disabled>--- Please Select ---</option>
                 <option v-for="(camp_list, index) in camps" :key="index" :value="camp_list.location.id">{{ camp_list.location.name }}</option>
               </select>
@@ -40,7 +40,10 @@
                 <p class="mbr-section-text  align-center mbr-fonts-style display-7"><span class="mbri-sale">&nbsp;</span> ${{ camp.price }}</p>
               </div>
               <div class="mbr-section-btn text-center">
-                <a v-if="selected_id ? selected_id == camp.id : cur_camp.camp.id == camp.id" href="#" class="btn btn-secondary display-4" @click="selectCamp($event, camp.id)">
+                <a v-if="registered[camp.id]" href="#" class="btn btn-danger display-4">
+                  Already Registered
+                </a>
+                <a v-else-if="selected_id ? selected_id == camp.id : cur_camp.camp.id == camp.id" href="#" class="btn btn-secondary display-4" @click="selectCamp($event, camp.id)">
                   <span class="mbrib-success mbr-iconfont mbr-iconfont-btn"></span>
                   SELECTED
                 </a>
@@ -107,7 +110,8 @@ export default {
         title: 'Alert Title',
         message: 'Alert Message',
         type: 'error'
-      }
+      },
+      camp_registered: []
     }
   },
   computed: {
@@ -119,14 +123,15 @@ export default {
     }),
     cur_camp() {
       let me = this;
+      let camp_id = this.selected_id;
       let item = this.camps.find(function(item){
         let camp = item.camps.find(function(item){
-          return item.id == me.selected_id;
+          return item.id == camp_id;
         })
         return !!camp;
       });
       let camp = item.camps.find(function(camp){
-        return camp.id == me.selected_id;
+        return camp.id == camp_id;
       })
       return {location: item.location, camp: camp};
     },
@@ -136,6 +141,10 @@ export default {
         return item.location.id == loc_id;
       });
       if (filter_arr.length > 0) {
+        filter_arr[0].camps.filter(camp => {
+          this.check_register(camp.id);
+          return true;
+        })
         return filter_arr[0].camps;
       }
       return [];
@@ -148,14 +157,15 @@ export default {
         }
         return true;
       })
-      console.log('cur_enrol_id: ' + enrol_id);
       return enrol_id;
-    }
+    },
+    registered() {
+      console.log(this.camp_registered)
+      return this.camp_registered;
+    },
   },
   created() {
-    console.log(this.enrols);
     this.selected_id = this.enrols[this.cur_enrol_id].camp_id;
-    console.log('selected_id: ' + this.selected_id);
     this.$store.dispatch('camps/fetchLocationCamps', {post_id: this.post.id})
   },
   methods: {
@@ -166,7 +176,20 @@ export default {
       e.preventDefault();
       this.selected_id = id;
     },
+    check_register(camp_id) {
+      axios.post('/api/check-registered', {
+        camp_id: camp_id,
+        child_id: this.enrols[this.cur_enrol_id].child_id
+      }).then(response => {
+        console.log(response.data.status)
+        this.camp_registered[camp_id] = response.data.status;
+      });
+    },
     next() {
+      if (this.registered[this.selected_id]) {
+        this.showWarning('No camps for this child');
+        return ;
+      }
       this.enrol_data.id = this.cur_enrol_id;
       this.enrol_data.camp_id = this.selected_id;
       this.enrol_data.fee = this.cur_camp.camp.price;
@@ -177,6 +200,7 @@ export default {
           this.$router.push({name: 'camps.payment'});
         } else {
           this.selected_id = this.enrols[this.enrol_data.next_id].camp_id ? this.enrols[this.enrol_data.next_id].camp_id : this.selected_id;
+          this.location_id = this.cur_camp.location.id;
           this.$router.push({name: 'camps.select'});
         }
       })
@@ -191,11 +215,15 @@ export default {
           this.$router.push({name: 'camps.all-children'});
         } else {
           this.selected_id = this.enrols[this.enrol_data.next_id].camp_id ? this.enrols[this.enrol_data.next_id].camp_id : this.selected_id;
-          this.$router.replace({name: 'camps.select'});
+          this.location_id = this.cur_camp.location.id;
+          this.$router.push({name: 'camps.select'});
         }
       })
     },
-    showMessage() {
+    showWarning(message) {
+      this.msg.type = 'warning';
+      this.msg.message = message;
+      this.msg.title = 'Warning!';
       this.$refs.simplert.openSimplert(this.msg);
     }
   }

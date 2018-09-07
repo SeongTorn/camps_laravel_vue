@@ -4,6 +4,7 @@ import Child from './Child'
 import Button from './Button'
 import Checkbox from './Checkbox'
 import TopSpace from './TopSpace'
+import InputModal from './InputModal'
 import BottomSpace from './BottomSpace'
 import SafetySpace from './SafetySpace'
 import { HasError, AlertError, AlertSuccess } from 'vform'
@@ -18,8 +19,9 @@ import { HasError, AlertError, AlertSuccess } from 'vform'
   AlertError,
   AlertSuccess,
   TopSpace,
+  InputModal,
   BottomSpace,
-  SafetySpace
+  SafetySpace,
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })

@@ -588,7 +588,9 @@ import axios from 'axios';
 
 export default {
   computed: mapGetters({
-    camp_id: 'camps/camp_id'
+    camp_id: 'camps/camp_id',
+    parent: 'camps/parent',
+    isLoggedin: 'auth/check'
   }),
   data() {
     return {
@@ -608,7 +610,11 @@ export default {
       this.$router.push({name: 'camps.register.parent1'});
     },
     enrol() {
-      this.$router.push({name: 'camps.select'});
+      if (this.parent) {
+        this.$router.push({name: 'camps.all-children'});
+      } else {
+        this.$router.push({name: 'camps.register.parent1'});
+      }
     }
   }
 }

@@ -17,7 +17,7 @@ class ResetPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+      $this->middleware('guest');
     }
 
     /**
@@ -28,7 +28,7 @@ class ResetPasswordController extends Controller
      */
     protected function sendResetResponse($response)
     {
-        return ['status' => trans($response)];
+      return ['status' => trans($response)];
     }
 
     /**
@@ -40,6 +40,6 @@ class ResetPasswordController extends Controller
      */
     protected function sendResetFailedResponse(Request $request, $response)
     {
-        return response()->json(['email' => trans($response)], 400);
+      return response()->json(['email' => trans($response)], 400);
     }
 }

@@ -99,33 +99,33 @@ export default {
     next() {
       // console.log(this.form);
       this.form.busy = true;
-      axios.post('/api/subscribe', {email: this.form.email}).then(response => {
+      axios.post('/api/subscribe', {email: this.form.email, list: 1}).then(response => {
         // console.log(response.data);
         if (response.data.success == true) {
-          axios.post('/api/add-to-drip', {email: this.form.email}).then(response => {
-            // console.log(response.data);
-            this.form.busy = false;
-            if (response.data.success) {
-              this.$store.dispatch('camps/setParent', {parent: this.form}).then(() => {
-                this.$router.push({name: 'camps.register.parent2'});
-              }).catch(error => {
-                this.msg.title = 'Set Parent Info Error';
-                this.msg.message = error;
-                this.showMessage();
-              });
-            } else {
-              this.msg.title = 'Drip Error';
-              this.msg.message = 'Some error occured during add drip action';
-              this.showMessage();
-            }
-          })
+          return axios.post('/api/add-to-drip', {email: this.form.email})
         } else {
           this.msg.title = 'Subscribe Error';
           this.msg.message = 'Some error occured during subscribe action';
           this.showMessage();
           this.form.busy = false;
         }
-      });
+      }).then(response => {
+        // console.log(response.data);
+        this.form.busy = false;
+        if (response.data.success) {
+          return this.$store.dispatch('camps/setParent', {parent: this.form})
+        } else {
+          this.msg.title = 'Drip Error';
+          this.msg.message = 'Some error occured during add drip action';
+          this.showMessage();
+        }
+      }).then(() => {
+        this.$router.push({name: 'camps.register.parent2'});
+      }).catch(error => {
+        this.msg.title = 'Set Parent Info Error';
+        this.msg.message = error;
+        this.showMessage();
+      });;
     },
     showMessage() {
       this.$refs.simplert.openSimplert(this.msg);

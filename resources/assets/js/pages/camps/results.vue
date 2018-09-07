@@ -120,14 +120,25 @@
         </div>
       </div>
     </section>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"></simplert>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import axios from 'axios';
+import Form from 'vform'
 
 export default {
+  data() {
+    return {
+      msg: {
+        title: 'Alert Title',
+        message: 'Alert Message',
+        type: 'error'
+      }
+    }
+  },
   computed: mapGetters({
     post: 'camps/post',
     camps: 'camps/camps'
@@ -139,13 +150,26 @@ export default {
   methods: {
     detail(e, id) {
       e.preventDefault();
-      this.$store.dispatch('camps/setCampId', {camp_id: id})
-      this.$router.push({name: 'camps.details'})
+      this.$store.dispatch('camps/setCampId', {camp_id: id}).then(() => {
+        this.$router.push({name: 'camps.details'})
+      }).catch(error => {
+          this.msg.title = 'Set Camp Id Error';
+          this.msg.message = error;
+          this.showMessage();
+      })
     },
     register(e, id) {
       e.preventDefault();
-      this.$store.dispatch('camps/setCampId', {camp_id: id})
-      this.$router.push({name: 'camps.register'});
+      this.$store.dispatch('camps/setCampId', {camp_id: id}).then(() => {
+        this.$router.push({name: 'camps.register'});
+      }).catch(error => {
+          this.msg.title = 'Set Camp Id Error';
+          this.msg.message = error;
+          this.showMessage();
+      })
+    },
+    showMessage() {
+      this.$refs.simplert.openSimplert(this.msg);
     }
   }
 }

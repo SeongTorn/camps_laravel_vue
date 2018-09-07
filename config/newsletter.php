@@ -34,6 +34,12 @@ return [
              */
             'id' => env('MAILCHIMP_LIST_ID'),
         ],
+        'remarketing' => [
+          'id' => env('MAILCHIMP_REMARKETING_LIST_ID'),
+        ],
+        'onboarding' => [
+          'id' => env('MAILCHIMP_ONBOARDING_LIST_ID'),
+        ],
     ],
 
     /*

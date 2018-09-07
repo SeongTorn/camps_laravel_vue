@@ -12,18 +12,14 @@
 					<div class="mbr-text col-12 col-md-8 mbr-fonts-style display-7">
 						<div class="col-md-12" data-for="name">
 							<div class="form-group">
-								<label class="form-control-label mbr-fonts-style display-7" for="name-form1-9a">Email*</label>
-								<input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email" required="" placeholder="example@example.com" id="name-form1-9a-1">
-                <has-error :form="form" field="email"/>
-                <!--<input type="email" class="form-control" name="name" data-form-field="Name" required="" placeholder="example@example.com" id="name-form1-9a-1"> -->
+								<label class="form-control-label mbr-fonts-style display-7" >Email*</label>
+								<input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" required="" placeholder="example@example.com">
 							</div>
 						</div>
 						<div class="col-md-12" data-for="name">
 							<div class="form-group">
 								<label class="form-control-label mbr-fonts-style display-7" for="name-form1-9a">Password*</label>
-								<input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password">
-                <has-error :form="form" field="password"/>
-								<!--<input type="password" class="form-control" name="name" data-form-field="Name" required="" placeholder="Password" id="name-form1-9a-2"> -->
+								<input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" required>
 							</div>
 						</div>
 						<div class="col-md-12">
@@ -51,10 +47,12 @@
 			</div>
 		</section>
     </form>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"></simplert>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Form from 'vform'
 
 export default {
@@ -65,25 +63,41 @@ export default {
       email: '',
       password: ''
     }),
+    msg: {
+      title: 'Alert Title',
+      message: 'Alert Message',
+      type: 'error'
+    },
     remember: false
   }),
-
+  computed: mapGetters({
+    user: 'auth/user',
+    parent: 'camps/parent'
+  }),
   methods: {
     async login () {
-      // Submit the form.
-      const { data } = await this.form.post('/api/login')
-
-      // Save the token.
-      this.$store.dispatch('auth/saveToken', {
-        token: data.token,
-        remember: this.remember
+      this.form.post('/api/login').then(response => {
+        return this.$store.dispatch('auth/saveToken', {
+          token: response.data.token,
+          remember: this.remember
+        })
+      }).then(() => {
+        this.login_success()
+      }).catch(error => {
+        this.msg.title = 'Login Failed';
+        this.msg.message = 'These credentials do not match our records.';
+        this.showMessage();
       })
-
-      // Fetch the user.
+    },
+    async login_success() {
       await this.$store.dispatch('auth/fetchUser')
-
-      // Redirect home.
+      console.log(this.user);
+      await this.$store.dispatch('camps/fetchParent', {email: this. user.email})
+      console.log(this.parent);
       this.$router.push({name: 'camps.all-children'});
+    },
+    showMessage() {
+      this.$refs.simplert.openSimplert(this.msg);
     }
   }
 }

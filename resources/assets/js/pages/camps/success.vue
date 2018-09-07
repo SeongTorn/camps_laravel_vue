@@ -56,10 +56,14 @@
             <div data-form-alert="" hidden="">
               Thanks for filling out the form!
             </div>
-            <form class="mbr-form" action="#" method="post" data-form-title="Mobirise Form"><input type="hidden" name="email" data-form-email="true" value="xJfGAwSvro2JzvwT+k8y+m783U87gqn/4W0s6AjRu9PbxMbhHkg6hhaG1Vhsv3sv9vP7v37khAymcoqII/prFHlos05Y1eMrLvJDfRBtoMp8qhkqAf/Xwp8mwpSM8GDe" data-form-field="Email">
+            <form @submit.prevent="resend">
               <div class="mbr-subscribe input-group">
-                <input class="form-control" type="email" name="email" placeholder="Email" data-form-field="Email" required="" id="email-form3-bc">
-                <span class="input-group-btn"><button href="" type="submit" class="btn btn-primary display-4">Re-Send Email</button></span>
+                <input class="form-control" type="email" v-model="form.new_email" placeholder="Email" required="">
+                <span class="input-group-btn">
+                  <v-button :loading="form.busy" class="btn btn-primary display-4 btn-radius">
+                    Re-Send Email
+                  </v-button>
+                </span>
               </div>
             </form>
           </div>
@@ -88,6 +92,7 @@
       </div>
     </section>
     <bottom-space/>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"></simplert>
   </div>
 </template>
 
@@ -98,22 +103,47 @@ import axios from 'axios';
 export default {
   data() {
     return {
-
+      form: {
+        email: '',
+        new_email: '',
+        list: 2,
+        busy: false
+      },
+      msg: {
+        title: 'Alert Title',
+        message: 'Alert Message',
+        type: 'error'
+      }
     }
   },
   computed: {
     ...mapGetters({
-      isLoggedin: 'auth/check',
-      camps: 'camps/camps',
-      camp_id: 'camps/camp_id',
-      post: 'camps/post'
+      parent: 'camps/parent'
     })
   },
   created() {
-    console.log('created')
+    console.log(this.parent);
+    this.form.email = this.parent.email;
   },
   methods: {
-
+    resend() {
+      axios.post('/api/send-mail', {message: 'test', toEmail: 'houn.sockram@hotmail.com'}).then(response => {
+        return axios.post('/api/update-email', this.form);
+      }).then(reponse => {
+        return axios.post('api/update-from-drip', this.form);
+      }).then(response => {
+        return axios.post('/api/update-subscribe', this.form);
+      }).then(response => {
+        this.msg.title = 'Success!';
+        this.msg.message = 'Successfully updated';
+        this.msg.type = 'info';
+        this.showMessage();
+      })
+      this.form.busy = true;
+    }
+  },
+  showMessage() {
+    this.$refs.simplert.openSimplert(this.msg);
   }
 }
 </script>

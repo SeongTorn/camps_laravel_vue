@@ -17,7 +17,7 @@ class ForgotPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+      $this->middleware('guest');
     }
 
     /**
@@ -28,7 +28,7 @@ class ForgotPasswordController extends Controller
      */
     protected function sendResetLinkResponse($response)
     {
-        return ['status' => trans($response)];
+      return ['status' => trans($response)];
     }
 
     /**

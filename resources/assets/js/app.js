@@ -20,7 +20,7 @@ const options = {
   key: '',
   // image: 'https://cdn.meme.am/images/100x100/15882140.jpg',
   locale: 'auto',
-  currency: 'PHP',
+  currency: 'USD',
   billingAddress: false,
   panelLabel: 'Subscribe {{amount}}'
 }

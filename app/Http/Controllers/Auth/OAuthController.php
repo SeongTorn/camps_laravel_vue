@@ -20,9 +20,9 @@ class OAuthController extends Controller
      */
     public function __construct()
     {
-        config([
-            'services.github.redirect' => route('oauth.callback', 'github'),
-        ]);
+      config([
+        'services.github.redirect' => route('oauth.callback', 'github'),
+      ]);
     }
 
     /**
@@ -33,9 +33,9 @@ class OAuthController extends Controller
      */
     public function redirectToProvider($provider)
     {
-        return [
-            'url' => Socialite::driver($provider)->stateless()->redirect()->getTargetUrl(),
-        ];
+      return [
+        'url' => Socialite::driver($provider)->stateless()->redirect()->getTargetUrl(),
+      ];
     }
 
     /**
@@ -46,18 +46,18 @@ class OAuthController extends Controller
      */
     public function handleProviderCallback($provider)
     {
-        $user = Socialite::driver($provider)->stateless()->user();
-        $user = $this->findOrCreateUser($provider, $user);
+      $user = Socialite::driver($provider)->stateless()->user();
+      $user = $this->findOrCreateUser($provider, $user);
 
-        $this->guard()->setToken(
-            $token = $this->guard()->login($user)
-        );
+      $this->guard()->setToken(
+        $token = $this->guard()->login($user)
+      );
 
-        return view('oauth/callback', [
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $this->guard()->getPayload()->get('exp') - time(),
-        ]);
+      return view('oauth/callback', [
+        'token' => $token,
+        'token_type' => 'bearer',
+        'expires_in' => $this->guard()->getPayload()->get('exp') - time(),
+      ]);
     }
 
     /**
@@ -67,24 +67,20 @@ class OAuthController extends Controller
      */
     protected function findOrCreateUser($provider, $user)
     {
-        $oauthProvider = OAuthProvider::where('provider', $provider)
-            ->where('provider_user_id', $user->getId())
-            ->first();
-
-        if ($oauthProvider) {
-            $oauthProvider->update([
-                'access_token' => $user->token,
-                'refresh_token' => $user->refreshToken,
-            ]);
-
-            return $oauthProvider->user;
-        }
-
-        if (User::where('email', $user->getEmail())->exists()) {
-            throw new EmailTakenException;
-        }
-
-        return $this->createUser($provider, $user);
+      $oauthProvider = OAuthProvider::where('provider', $provider)
+          ->where('provider_user_id', $user->getId())
+          ->first();
+      if ($oauthProvider) {
+        $oauthProvider->update([
+          'access_token' => $user->token,
+          'refresh_token' => $user->refreshToken,
+        ]);
+        return $oauthProvider->user;
+      }
+      if (User::where('email', $user->getEmail())->exists()) {
+        throw new EmailTakenException;
+      }
+      return $this->createUser($provider, $user);
     }
 
     /**
@@ -94,18 +90,16 @@ class OAuthController extends Controller
      */
     protected function createUser($provider, $sUser)
     {
-        $user = User::create([
-            'name' => $sUser->getName(),
-            'email' => $sUser->getEmail(),
-        ]);
-
-        $user->oauthProviders()->create([
-            'provider' => $provider,
-            'provider_user_id' => $sUser->getId(),
-            'access_token' => $sUser->token,
-            'refresh_token' => $sUser->refreshToken,
-        ]);
-
-        return $user;
+      $user = User::create([
+        'name' => $sUser->getName(),
+        'email' => $sUser->getEmail(),
+      ]);
+      $user->oauthProviders()->create([
+        'provider' => $provider,
+        'provider_user_id' => $sUser->getId(),
+        'access_token' => $sUser->token,
+        'refresh_token' => $sUser->refreshToken,
+      ]);
+      return $user;
     }
 }

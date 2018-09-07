@@ -8,6 +8,7 @@ use App\Http\Controllers\Camps\PostController;
 use App\Models\ParentDetail;
 use App\Models\ChildDetail;
 use App\Models\GiftCard;
+use App\Models\Enrolment;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
-class CampController extends Controller
+class CampsController extends Controller
 {
   private $postController;
   public function __construct()
@@ -167,6 +168,17 @@ class CampController extends Controller
     }
   }
 
+  public function checkRegistered(Request $request)
+  {
+    $status = false;
+    $child = Enrolment::where('camp_id', $request->get('camp_id'))
+                          ->where('student_id', $request->get('child_id'));
+    if ($child->count() > 0) {
+      $status = true;
+    }
+    return response()->json(['status'=>$status]);
+  }
+
   public function saveChildDetails(Request $request)
   {
     $child = ChildDetail::where('first_name', $request->get('first_name'))
@@ -210,6 +222,17 @@ class CampController extends Controller
     }
   }
 
+  public function getParent(Request $request)
+  {
+    $parent = ParentDetail::where('email', $request->get('email'))
+                            ->get();
+    if (count($parent) > 0) {
+      return response()->json(['status'=>'success', 'parent'=>$parent->toArray()[0]]);
+    } else {
+      return response()->json(['status'=>'error']);
+    }
+  }
+
   public function getChildren(Request $request)
   {
     $children = ChildDetail::where('parent_id', $request->get('parent_id'))
@@ -244,6 +267,41 @@ class CampController extends Controller
     } else {
       return response()->json(['valid'=>false]);
     }
+  }
+
+  public function checkPayment(Request $request)
+  {
+    $payed_list = [];
+    $payed_list = array_filter($request->get('enrols'), function($enrol) {
+      $db_enrol = Enrolment::where('camp_id', $enrol['camp_id'])
+                            ->where('student_id', $enrol['child_id']);
+      if ($db_enrol->count() > 0) {
+        return true;
+      }
+      return false;
+    });
+    return response()->json(['success'=>true, 'payed_list'=>$payed_list]);
+  }
+
+  public function savePayment(Request $request)
+  {
+    $gift_data = $request->get('gift');
+    $payed_list = array_filter($request->get('enrols'), function($enrol) use($gift_data){
+      $enrolment = new Enrolment;
+      $enrolment->camp_id = $enrol['camp_id'];
+      $enrolment->student_id = $enrol['child_id'];
+      $enrolment->enrolment_fees = $enrol['fee'] - $gift_data['avg'];
+      $enrolment->save();
+      return true;
+    });
+
+    $gift_redeemed = count($payed_list) * $gift_data['avg'];
+    $gift = GiftCard::where('gift_card_code', $gift_data['code'])
+                      ->where('email', $gift_data['email']);
+    if ($gift->count() > 0 && $gift_redeemed > 0) {
+      $gift->update(['amount_redeemed' => $gift_redeemed]);
+    }
+    return response()->json(['success'=>true]);
   }
 
   public function toNoCampPage(Request $request)

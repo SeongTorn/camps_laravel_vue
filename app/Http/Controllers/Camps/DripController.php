@@ -15,7 +15,7 @@ class DripController extends Controller
     ]);
     try {
       $subscriber = Drip::fetchSubscriber(['email' => $request->get('email')]);
-      if ($subscriber['status'] == 'active') {
+      if ($subscriber) {
         return response()->json(['success' => true, 'msg'=>'already subscribed']);
       }
       Drip::createOrUpdateSubscriber(

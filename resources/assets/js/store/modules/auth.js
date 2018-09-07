@@ -46,7 +46,15 @@ export const mutations = {
 // actions
 export const actions = {
   saveToken ({ commit, dispatch }, payload) {
-    commit(types.SAVE_TOKEN, payload)
+    return new Promise((resolve, reject) => {
+      console.log(payload);
+      if (payload.token) {
+        commit(types.SAVE_TOKEN, payload)
+        resolve()
+      } else {
+        reject()
+      }
+    })
   },
 
   async fetchUser ({ commit }) {

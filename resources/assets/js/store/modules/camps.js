@@ -68,6 +68,10 @@ export const mutations = {
     state.enrols.push(enrol)
     Cookies.set('enrols', state.enrols, { expires: 365 })
   },
+  [types.REMOVE_ENROLS] (state) {
+    state.enrols = []
+    Cookies.set('enrols', state.enrols, { expires: 365 })
+  },
   [types.SET_ENROL] (state, { enrol }) {
     // console.log(state.enrols[enrol.id])
     state.enrols[enrol.id].camp_id = enrol.camp_id;
@@ -83,7 +87,7 @@ export const mutations = {
       state.enrols.push({
         child_id: child.id,
         child_name: child.first_name + ' ' + child.last_name,
-        camp_id: 0,
+        camp_id: camp_id,
         camp_name: '',
         selecting: false
       })
@@ -112,8 +116,15 @@ export const actions = {
   setCamps ({ commit }, camps) {
     commit(types.SET_CAMPS, camps)
   },
-  setCampId ({ commit }, camp_id) {
-    commit(types.SET_CAMPID, camp_id)
+  setCampId ({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      if (data.camp_id > 0) {
+        commit(types.SET_CAMPID, data)
+        resolve()
+      } else {
+        reject({error: 'camp id is invalid'})
+      }
+    })
   },
   setParent ({ commit }, parent) {
     return new Promise((resolve, reject) => {
@@ -140,14 +151,21 @@ export const actions = {
       resolve({index: 1});
     })
   },
-  initEnrols ({ commit }, camp_id) {
+  initEnrols ({ commit }, data) {
     return new Promise((resolve, reject) => {
-      if (camp_id > 0) {
-        commit(types.INIT_ENROLS, camp_id)
+      if (data.camp_id > 0) {
+        commit(types.INIT_ENROLS, data)
         resolve()
       } else {
         reject({error: 'camp id is invalid'})
       }
+    })
+  },
+  removeEnrols ({ commit }) {
+    return new Promise((resolve, reject) => {
+      commit(types.SET_CHILDREN, { children: [] })
+      commit(types.REMOVE_ENROLS)
+      resolve()
     })
   },
   initChildren({ commit }) {
@@ -166,6 +184,16 @@ export const actions = {
       const { data } = await axios.post('/api/children', {parent_id: parent_id})
       if (data.status == "success") {
         commit(types.SET_CHILDREN, { children: data.children })
+      }
+    } catch (e) {
+      commit(types.INIT_CAMPS)
+    }
+  },
+  async fetchParent ({ commit }, email) {
+    try {
+      const { data } = await axios.post('/api/parent', {email: email})
+      if (data.status == "success") {
+        commit(types.SET_PARENT, { parent: data.parent })
       }
     } catch (e) {
       commit(types.INIT_CAMPS)

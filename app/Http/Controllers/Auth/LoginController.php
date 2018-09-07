@@ -28,15 +28,13 @@ class LoginController extends Controller
      */
     protected function attemptLogin(Request $request)
     {
-        $token = $this->guard()->attempt($this->credentials($request));
+      $token = $this->guard()->attempt($this->credentials($request));
 
-        if ($token) {
-            $this->guard()->setToken($token);
-
-            return true;
-        }
-
-        return false;
+      if ($token) {
+        $this->guard()->setToken($token);
+        return true;
+      }
+      return false;
     }
 
     /**
@@ -47,16 +45,16 @@ class LoginController extends Controller
      */
     protected function sendLoginResponse(Request $request)
     {
-        $this->clearLoginAttempts($request);
+      $this->clearLoginAttempts($request);
 
-        $token = (string) $this->guard()->getToken();
-        $expiration = $this->guard()->getPayload()->get('exp');
+      $token = (string) $this->guard()->getToken();
+      $expiration = $this->guard()->getPayload()->get('exp');
 
-        return [
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $expiration - time(),
-        ];
+      return [
+        'token' => $token,
+        'token_type' => 'bearer',
+        'expires_in' => $expiration - time(),
+      ];
     }
 
     /**
@@ -67,6 +65,6 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        $this->guard()->logout();
+      $this->guard()->logout();
     }
 }

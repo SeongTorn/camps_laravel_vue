@@ -67,11 +67,9 @@ export default {
     isLoggedin: 'auth/check'
   }),
   created() {
-    // console.log(this.isLoggedin)
     if (this.isLoggedin) {
       this.$store.dispatch('camps/fetchChildren', {parent_id: this.parent.id});
     }
-    // this.$store.dispatch('camp/fetchLocationCamps', {post_id: this.location.id})
   },
   methods: {
     remove(id) {
@@ -87,6 +85,18 @@ export default {
       this.$router.push({name: 'camps.child-details'});
     },
     next() {
+      if (!this.parent) {
+        this.msg.message= 'No parent. Please add or login to set parent',
+        this.msg.title  = 'Error';
+        this.showMessage();
+        return ;
+      }
+      if (this.children.length == 0) {
+        this.msg.message= 'No children to register. Please add child',
+        this.msg.title  = 'Error';
+        this.showMessage();
+        return ;
+      }
       this.$store.dispatch('camps/initEnrols', {camp_id: this.camp_id}).then(() => {
         this.$router.push({name: 'camps.select'});
       }).catch(error => {

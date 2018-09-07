@@ -30,10 +30,6 @@
                 <span class="mbrib-login mbr-iconfont mbr-iconfont-btn"></span>
                 Send Reset Link
               </v-button>
-              <!-- <a class="btn btn-secondary display-4" href="https://mobirise.com">
-                <span class="mbrib-login mbr-iconfont mbr-iconfont-btn"></span>
-                {!! Form::submit('Send Reset Link', ['btn-submit']) !!}
-              </a> -->
             </div>
           </div>
         </div>
@@ -49,24 +45,19 @@ import Form from 'vform'
 
 export default {
   middleware: 'guest',
-
   metaInfo () {
     return { title: this.$t('reset_password') }
   },
-
   data: () => ({
     status: '',
     form: new Form({
       email: ''
     })
   }),
-
   methods: {
     async send () {
       const { data } = await this.form.post('/api/password/email')
-
       this.status = data.status
-
       this.form.reset()
     }
   }

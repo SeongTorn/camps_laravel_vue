@@ -12,26 +12,28 @@
 
     <section class="mbr-section content8 cid-qZDmx10m9q" id="content8-a7">
       <div class="container">
+        <form @submit.prevent="checkout">
         <div class="media-container-row title">
           <div class="col-12 col-md-8">
             <div class="mbr-section-btn align-center">
-              <a class="btn btn-secondary display-5" href="#" @click="checkout">
+              <v-button :loading="checkout_busy" class="btn btn-secondary display-5 btn-radius">
                 <span class="mbri-credit-card mbr-iconfont mbr-iconfont-btn"></span>
                 Pay Now
-              </a>
+              </v-button>
             </div>
           </div>
         </div>
+        </form>
       </div>
     </section>
 
     <section class="mbr-section article content1 cid-qZDljz1dnu">
-      <form @submit.prevent="apply" @keydown="form.onKeydown($event)">
+      <form @submit.prevent="apply">
       <div class="container">
         <div class="media-container-row">
           <div class="mbr-text col-12 col-md-4 mbr-fonts-style display-7">
             <p>Gift Card/Voucher Code:</p>
-            <input type="text" class="form-control" v-model="gift_code">
+            <input type="text" class="form-control" v-model="gift.code">
             <v-button :loading="form.busy" class="btn btn-primary btn-form display-4 btn-radius">
               Apply
             </v-button>
@@ -57,7 +59,7 @@
               <tr v-for="(enrol, index) in enrols" :key="index">
                 <td>{{ enrol.child_name }}</td>
                 <td>{{ enrol.camp_name }}</td>
-                <td>${{ enrol.fee }}</td>
+                <td>${{ enrol.fee - gift.avg }}</td>
               </tr>
             </table>
             <p v-for="i in 4" :key="i"><br></p>
@@ -82,6 +84,15 @@
     </section>
     <bottom-space/>
     <simplert :useRadius="true" :useIcon="true" ref="simplert"></simplert>
+    <input-modal v-if="showInput" @close="closeInput">
+      <div slot="header">
+        <h3>Please input the amount of gift card you are going to use.</h3>
+      </div>
+      <div slot="body">
+        <p>Available Gift Card/Voucher Amount: {{ gift.amount }}</p>
+        <input type="text" class="form-control" v-model="gift.redeemed">
+      </div>
+    </input-modal>
   </div>
 </template>
 
@@ -94,9 +105,15 @@ export default {
     return {
       location_id: 0,
       selected_id: this.camp_id,
-      gift_code: '',
-      gift_amount: 0,
+      gift: {
+        code: '',
+        amount: 0,
+        redeemed: 0,
+        avg: 0,
+        email: ''
+      },
       pay_amount: 0,
+      checkout_busy: false,
       stripe_data: {
         stripeToken: null,
         stripeEmail: '',
@@ -110,7 +127,8 @@ export default {
         title: 'Alert Title',
         message: 'Alert Message',
         type: 'error'
-      }
+      },
+      showInput: false
     }
   },
   computed: {
@@ -121,7 +139,7 @@ export default {
       enrols: 'camps/enrols'
     }),
     total_fee() {
-      return this.enrols.reduce((acc, item) => acc + item.fee, 0);
+      return this.enrols.reduce((acc, item) => acc + item.fee - this.gift.avg, 0);
     }
   },
   created() {
@@ -130,39 +148,51 @@ export default {
   },
   methods: {
     apply() {
-      if (!this.gift_code) {
-        this.msg.title = 'Warning';
-        this.msg.type = 'warning';
-        this.msg.message = 'Please input your Gift Card/Voucher Code';
-        this.showMessage();
+      if (!this.gift.code) {
+        this.showWarning('Please input your Gift Card/Voucher Code');
         return ;
       }
       this.form.busy = true;
-      axios.post('/api/check-gift-card', {code: this.gift_code, email: this.parent.email}).then(response => {
+      axios.post('/api/check-gift-card', {code: this.gift.code, email: this.parent.email}).then(response => {
         this.form.busy = false;
         if (response.data.valid) {
-          this.gift_amount = response.data.amount;
+          this.gift.amount = response.data.amount;
+          this.showInput = true;
         } else {
-          this.msg.title = 'Error';
-          this.msg.message = 'Invalid Gift Card/Voucher code';
-          this.showMessage();
+          this.showError('Invalid Gift Card/Voucher code');
         }
       }).catch(error => {
         this.form.busy = false;
-        console.error(error.message);
       });
     },
-    checkout(e) {
-      e.preventDefault();
-      this.pay_amount = (this.total_fee - this.gift_amount) * 100;
-      axios.post('/api/stripe-publish-key').then(response => {
+    checkout() {
+      this.savePaymentDetail();
+      /*
+      if (this.total_fee === 0) {
+        this.showWarning('Please check your payment fees');
+        return ;
+      }
+      this.checkout_busy = true;
+      this.pay_amount = this.total_fee * 100;
+      axios.post('/api/check-payment', {enrols: this.enrols}).then(response=> {
+        if (!response.data.payed_list.length) {
+          return axios.post('/api/stripe-publish-key')
+        } else {
+          this.checkout_busy = false
+          var names = response.data.payed_list.reduce((acc, item) => acc + ', ' + item.child_name, '');
+          var msg = 'The camp for following children is alreday payed, please remove them' + '<br><br>' + names.substring(1);
+          this.showWarning(msg);
+        }
+      }).then(response => {
         if (response.data.success == true) {
-          console.log(response.data.key);
+          this.checkout_busy = false;
           this.createCardToken(response.data.key);
         } else {
-          console.log('failed to get stripe publish key');
+          this.checkout_busy = false;
         }
-      });
+      }).catch(error=>{
+        this.checkout_busy = false
+      })*/
     },
     createCardToken(pub_key) {
       this.$checkout.open({
@@ -171,35 +201,63 @@ export default {
         currency: 'USD',
         amount: this.pay_amount,
         token: (token) => {
-          console.log(token);
           this.createCharge(token);
         }
       });
     },
     createCharge(token) {
+      this.checkout_busy = true;
       this.stripe_data.stripeToken = token.id;
       this.stripe_data.stripeEmail = token.email;
       this.stripe_data.amount = this.pay_amount;
       axios.post('/api/stripe-create-charge', this.stripe_data).then(response => {
-        console.log(response.data);
         this.savePaymentDetail();
+        this.checkout_busy = false;
       }).catch(error => {
-        console.log(error.message);
+        this.checkout_busy = false;
       })
     },
     savePaymentDetail() {
-      this.$router.push({name: 'camps.success'});
-      axios.post('/api/save-payment', {data: this.enrol}).then(response => {
+      console.log('current email: ' + this.parent.email);
+      this.gift.email = this.parent.email;
+      axios.post('/api/save-payment', {enrols: this.enrols, gift: this.gift}).then(response => {
+        return axios.post('/api/unsubscribe', {email: this.parent.email, list: 1});
+      }).then(response => {
+        return axios.post('/api/subscribe', {email: this.parent.email, list: 2});
+      }).then(response => {
+        return axios.post('/api/send-mail', {message: 'test', toEmail: 'houn.sockram@hotmail.com'});
+      }).then(response => {
         console.log(response.data);
-        if (response.data.success == true) {
-
-        }
-      })
+        // return this.$store.dispatch('camps/removeEnrols');
+      }).then(reponse => {
+        // this.$router.push({name: 'camps.success'});
+      }).catch(error => {
+        console.log(error);
+        this.checkout_busy = false;
+      });
+    },
+    closeInput() {
+      if (this.gift.redeemed > this.gift.amount) {
+        let msg = 'The maximun amount of Gift Card/Voucher is ' + this.gift.amount;
+        this.showWarning(msg);
+        return ;
+      }
+      this.gift.avg = Math.floor(this.gift.redeemed / this.enrols.length);
+      this.showInput = false;
     },
     back() {
       this.$router.push({name: 'camps.select'});
     },
-    showMessage() {
+    showWarning(message) {
+      this.msg.title = 'Warning!';
+      this.msg.message = message;
+      this.msg.type = 'warning'
+      this.$refs.simplert.openSimplert(this.msg);
+    },
+    showError(message) {
+      this.msg.title = 'Error'
+      this.msg.message = message;
+      this.msg.type = 'error'
       this.$refs.simplert.openSimplert(this.msg);
     }
   }

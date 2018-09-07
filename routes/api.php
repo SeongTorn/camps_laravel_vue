@@ -35,17 +35,23 @@ Route::group(['middleware' => 'guest:api'], function () {
 });
 
 Route::post('postcodes', 'Camps\PostController@getPostCodes');
-Route::post('camps', 'Camps\CampController@getLocationCamps');
-Route::post('children', 'Camps\CampController@getChildren');
-Route::post('details', 'Camps\CampController@getCampDetails');
-Route::post('register-parent', 'Camps\CampController@saveParentDetails');
-Route::post('register-child', 'Camps\CampController@saveChildDetails');
-Route::post('deactive-child', 'Camps\CampController@deactiveChild');
-Route::post('check-gift-card', 'Camps\CampController@checkGiftCard');
+Route::post('camps', 'Camps\CampsController@getLocationCamps');
+Route::post('children', 'Camps\CampsController@getChildren');
+Route::post('parent', 'Camps\CampsController@getParent');
+Route::post('details', 'Camps\CampsController@getCampDetails');
+Route::post('register-parent', 'Camps\CampsController@saveParentDetails');
+Route::post('register-child', 'Camps\CampsController@saveChildDetails');
+Route::post('check-registered', 'Camps\CampsController@checkRegistered');
+Route::post('deactive-child', 'Camps\CampsController@deactiveChild');
+Route::post('check-gift-card', 'Camps\CampsController@checkGiftCard');
+Route::post('check-payment', 'Camps\CampsController@checkPayment');
+Route::post('save-payment', 'Camps\CampsController@savePayment');
 Route::post('stripe-publish-key', 'Camps\PaymentController@stripePublishKey');
 Route::post('stripe-create-charge', 'Camps\PaymentController@stripeCreateCharge');
 
 Route::post('subscribe',['as'=>'subscribe','uses'=>'Camps\MailChimpController@subscribe']);
+Route::post('unsubscribe',['as'=>'unsubscribe','uses'=>'Camps\MailChimpController@unsubscribe']);
 Route::post('add-to-drip',['as'=>'add-to-drip','uses'=>'Camps\DripController@addUserToDrip']);
 Route::post('update-from-drip',['as'=>'update-from-drip','uses'=>'Camps\DripController@updateUserFromDrip']);
 Route::post('remove-from-drip',['as'=>'remove-from-drip','uses'=>'Camps\DripController@removeUserFromDrip']);
+Route::post('send-mail',['as'=>'send-mail','uses'=>'Camps\MailController@sendMail']);
