@@ -144,7 +144,6 @@ export default {
   },
   created() {
     console.log(this.enrols);
-    // this.$store.dispatch('camp/fetchLocationCamps', {post_id: this.post.id})
   },
   methods: {
     apply() {

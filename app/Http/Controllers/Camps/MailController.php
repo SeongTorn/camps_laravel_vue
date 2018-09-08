@@ -17,11 +17,15 @@ class MailController extends Controller
     } else {
       $data [] = '';
     }
-    Mail::to('houn.sockram@hotmail.com')->send(new SendMail($data));
+    // Mail::to('houn.sockram@hotmail.com')->send(new SendMail($data));
     /*Mail::send ('emails.reset', $data, function($message) use($request) {
       $message->from('seongtorn@gmail.com', 'Just Laravel');
       $message->to('houn.sockram@hotmail.com')->subject ('Just Laravel demo email using SendGrid');
     });*/
+    Mail::send('emails.reset', $data, function($message) use ($data) {
+      $message->to("houn.sockram@hotmail.com");
+      $message->subject('Sendgrid Testing');
+    });
     return response()->json(['success' => true]);
   }
 }

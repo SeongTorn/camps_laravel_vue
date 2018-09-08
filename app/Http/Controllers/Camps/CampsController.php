@@ -42,23 +42,24 @@ class CampsController extends Controller
         }
         $count++;
         $location->dist = $dist;
-        $closet_locations[] = $location;
+        $near_locations[] = $location;
       }
     }
 
-    usort($closet_locations, function($first,$second){
+    usort($near_locations, function($first,$second){
       return $first->dist > $second->dist;
     });
 
     $i = 0;
     $camps = array();
-    foreach($closet_locations as $location) {
+    foreach($near_locations as $location) {
       $camp_data = DB::table('locations')
                   ->join('camps', 'locations.id', '=', 'camps.venue_id')
                   ->join('ages', 'camps.age_id', '=', 'ages.id')
                   ->join('workshops', 'camps.workshop_id', '=', 'workshops.id')
                   ->leftJoin('enrolments', 'enrolments.camp_id', '=', 'camps.id')
-                  ->select('locations.name',
+                  ->select( 'locations.name as location',
+                            'locations.id as location_id',
                             'camps.*',
                             DB::raw('DATEDIFF(camps.start_date, camps.end_date) as days'),
                             DB::raw('TIME_FORMAT(camps.start_time, "%h:%i%p") as startTime'),
@@ -77,19 +78,14 @@ class CampsController extends Controller
         date_default_timezone_set("Australia/Sydney");
         $today = date('Y-m-d');
         $now_time = date('H');
-
-        if ($item->start_date > $today) {
-          return true;
-        } else if ($item->start_date == $today && $now_time <= 8) {
+        if ($item->start_date > $today || ($item->start_date == $today && $now_time <= 8)) {
           return true;
         }
         return false;
       });
-      if (count($camp_data)) {
-        $camps[] = array(
-          'location' => $location,
-          'camps' => $camp_data
-        );
+      foreach($camp_data as $camp) {
+        $camp->dist = $location->dist;
+        $camps[] = $camp;
       }
     }
     if (!$camps || !count($camps)) {

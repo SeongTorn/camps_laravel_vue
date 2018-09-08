@@ -86,26 +86,23 @@ export default {
     },
     next() {
       if (!this.parent) {
-        this.msg.message= 'No parent. Please add or login to set parent',
-        this.msg.title  = 'Error';
-        this.showMessage();
+        this.showWarning('No parent. Please register or login to parent');
         return ;
       }
       if (this.children.length == 0) {
-        this.msg.message= 'No children to register. Please add child',
-        this.msg.title  = 'Error';
-        this.showMessage();
+        this.showWarning('No children to register. Please add child');
         return ;
       }
       this.$store.dispatch('camps/initEnrols', {camp_id: this.camp_id}).then(() => {
         this.$router.push({name: 'camps.select'});
       }).catch(error => {
-        this.msg.title = 'Init Enrol Data Error',
-        this.msg.message = error;
-        this.showMessage();
+        console.log(error);
       });
     },
-    showMessage() {
+    showWarning(message) {
+      this.msg.message= 'No children to register. Please add child',
+      this.msg.title  = 'Warning';
+      this.msg.type = 'warning';
       this.$refs.simplert.openSimplert(this.msg);
     }
   }

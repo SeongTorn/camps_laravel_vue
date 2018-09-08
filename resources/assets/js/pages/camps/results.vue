@@ -19,15 +19,15 @@
       </div>
     </section>
 
-    <div v-for="camp_list in camps" :key="camp_list.location.id">
+    <div v-for="(loc_camps, key) in grouped_camps" :key="key">
       <section id="next" class="mbr-section info1 cid-qQWMc4sypE">
         <div class="container">
           <div class="row justify-content-center content-row">
             <div class="media-container-column title col-12 col-lg-7 col-md-6">
               <h3 class="mbr-section-subtitle align-left mbr-light pb-3 mbr-fonts-style display-5">
-                Only {{ camp_list.location.dist }}km from {{ post.suburb }} {{ post.state }}
+                Only {{ loc_camps[0].dist }}km from {{ post.suburb }} {{ post.state }}
               </h3>
-              <h2 class="align-left mbr-bold mbr-fonts-style display-2">CAMPS @ {{ camp_list.location.name }}</h2>
+              <h2 class="align-left mbr-bold mbr-fonts-style display-2">CAMPS @ {{ key }}</h2>
             </div>
             <div class="media-container-column col-12 col-lg-3 col-md-4">
             </div>
@@ -38,7 +38,7 @@
       <section class="features3 cid-qQWAzjWbWN">
         <div class="container">
           <div class="media-container-row camp-list">
-            <div v-for="camp in camp_list.camps" :key="camp.id" class="card p-3 col-12 col-md-6 col-lg-4">
+            <div v-for="camp in loc_camps" :key="camp.id" class="card p-3 col-12 col-md-6 col-lg-4">
               <div class="card-wrapper">
                 <div class="card-img">
                   <img src="/assets/images/file-27-624x465.png">
@@ -128,7 +128,7 @@
 import { mapGetters } from 'vuex'
 import axios from 'axios';
 import Form from 'vform'
-
+import _ from 'lodash'
 export default {
   data() {
     return {
@@ -139,13 +139,20 @@ export default {
       }
     }
   },
-  computed: mapGetters({
-    post: 'camps/post',
-    camps: 'camps/camps'
-  }),
+  computed: {
+    ...mapGetters({
+      post: 'camps/post',
+      camps: 'camps/camps'
+    }),
+    grouped_camps() {
+      return _.groupBy(this.camps, camp => camp.location);
+    }
+  },
   created() {
-    // console.log(this.location)
-    this.$store.dispatch('camps/fetchLocationCamps', {post_id: this.post.id})
+    this.$store.dispatch('camps/fetchLocationCamps', {post_id: this.post.id}).then(() => {
+      // console.log(this.camps)
+      // console.log(this.grouped_camps)
+    })
   },
   methods: {
     detail(e, id) {
@@ -153,9 +160,7 @@ export default {
       this.$store.dispatch('camps/setCampId', {camp_id: id}).then(() => {
         this.$router.push({name: 'camps.details'})
       }).catch(error => {
-          this.msg.title = 'Set Camp Id Error';
-          this.msg.message = error;
-          this.showMessage();
+        this.showError('Set Camp Id Error');
       })
     },
     register(e, id) {
@@ -163,12 +168,12 @@ export default {
       this.$store.dispatch('camps/setCampId', {camp_id: id}).then(() => {
         this.$router.push({name: 'camps.register'});
       }).catch(error => {
-          this.msg.title = 'Set Camp Id Error';
-          this.msg.message = error;
-          this.showMessage();
+        this.showError('Set Camp Id Error');
       })
     },
-    showMessage() {
+    showError(message) {
+      this.msg.title = 'Error';
+      this.msg.message = message;
       this.$refs.simplert.openSimplert(this.msg);
     }
   }

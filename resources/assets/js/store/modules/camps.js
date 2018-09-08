@@ -4,7 +4,7 @@ import * as types from '../mutation-types'
 
 // state
 export const state = {
-  camps: null,
+  camps: [],
   post: Cookies.get('post') ? JSON.parse(Cookies.get('post')) : null,
   camp_id: Cookies.get('camp_id'),
   parent: Cookies.get('parent') ? JSON.parse(Cookies.get('parent')) : null,
@@ -73,7 +73,6 @@ export const mutations = {
     Cookies.set('enrols', state.enrols, { expires: 365 })
   },
   [types.SET_ENROL] (state, { enrol }) {
-    // console.log(state.enrols[enrol.id])
     state.enrols[enrol.id].camp_id = enrol.camp_id;
     state.enrols[enrol.id].camp_name = enrol.camp_name;
     state.enrols[enrol.id].fee = enrol.fee;
@@ -83,8 +82,9 @@ export const mutations = {
   },
   [types.INIT_ENROLS] (state, { camp_id }) {
     state.enrols = []
-    state.children.filter(child => {
+    state.children.filter((child, index) => {
       state.enrols.push({
+        id: index,
         child_id: child.id,
         child_name: child.first_name + ' ' + child.last_name,
         camp_id: camp_id,
@@ -173,7 +173,7 @@ export const actions = {
   },
   async fetchLocationCamps ({ commit }, post_id) {
     try {
-      const { data } = await axios.post('/api/camps', {post_id: post_id})
+      const { data } = await axios.post('/api/camps', { post_id: post_id })
       commit(types.SET_CAMPS, { camps: data })
     } catch (e) {
       commit(types.INIT_CAMPS)
