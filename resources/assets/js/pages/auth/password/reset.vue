@@ -50,6 +50,7 @@
     </section>
     </form>
     <bottom-space/>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"></simplert>
   </div>
 </template>
 
@@ -65,6 +66,11 @@ export default {
 
   data: () => ({
     status: '',
+    msg: {
+      title: 'Alert Title',
+      message: 'Alert Message',
+      type: 'info'
+    },
     form: new Form({
       token: '',
       email: '',
@@ -82,8 +88,17 @@ export default {
     async reset () {
       const { data } = await this.form.post('/api/password/reset')
       this.status = data.status
+      console.log(data.status)
+      //this.showMessage(data.status);
       this.form.reset()
+      this.$router.push({name: 'camps.login'})
+    },
+    showMessage(message) {
+      this.msg.title = 'Success!';
+      this.msg.message = message;
+      this.msg.type = 'info'
+      this.$refs.simplert.openSimplert(this.msg);
     }
-  }
+  },
 }
 </script>

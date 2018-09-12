@@ -68,7 +68,12 @@ export default {
   }),
   created() {
     if (this.isLoggedin) {
-      this.$store.dispatch('camps/fetchChildren', {parent_id: this.parent.id});
+      console.log(this.parent)
+      this.$store.dispatch('camps/fetchChildren', {parent_id: this.parent.id}).then(() => {
+        console.log(this.children)
+      }).catch(() => {
+        this.$router.push({name: 'camps.add-children'})
+      });
     }
   },
   methods: {

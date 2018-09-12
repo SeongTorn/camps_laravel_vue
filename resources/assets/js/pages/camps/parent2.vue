@@ -91,7 +91,9 @@ export default {
     parent: 'camps/parent'
   }),
   created() {
-
+    if (!this.parent) {
+      this.$router.push({name: 'camps.register'});
+    }
   },
   methods: {
     register() {
@@ -99,22 +101,17 @@ export default {
       this.form = Object.assign({}, this.form, this.parent)
       axios.post('/api/register-parent', this.form).then(response => {
         return this.$store.dispatch('camps/setParent', {parent: response.data});
-      }).catch(error => {
-        this.msg.title = 'Set Parent Info Error';
-        this.msg.message = 'Error in call api to register parent details';
-        this.showMessage();
-        this.form.busy = false;
       }).then(() => {
         this.form.busy = false;
-        this.$router.push({name: 'camps.child-details'})
+        this.$router.push({name: 'camps.child-details'});
       }).catch(error => {
         this.form.busy = false;
-        this.msg.title = 'Set Parent Info Error';
-        this.msg.message = error;
-        this.showMessage();
+        this.showError('Set Parent Info Error');
       });
     },
-    showMessage() {
+    showError(message) {
+      this.msg.title = 'Error';
+      this.msg.message = message;
       this.$refs.simplert.openSimplert(this.msg);
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="camp">
+  <div id="details" v-if="camp">
     <section class="header3 cid-qYXVEyyfMO" id="header3-7x">
       <div class="container">
         <div class="media-container-row">
@@ -26,10 +26,13 @@
       </div>
     </section>
 
-    <section class="mbr-section content5 cid-qYYgGguANY mbr-parallax-background" id="content5-8e">
+    <section class="mbr-section content5" id="content5-8e">
       <div class="mbr-overlay" style="opacity: 0.6; background-color: rgb(35, 35, 35);">
       </div>
-      <div class="container">
+      <parallax :speed="0.5" sectionClass="Masthead col-12 col-md-8">
+        <img src="/assets/images/gallery03-2000x1333.jpg">
+      </parallax>
+      <div class="container parallax-content">
         <div class="media-container-row">
           <div class="title col-12 col-md-8">
             <h2 class="align-center mbr-bold mbr-white pb-3 mbr-fonts-style display-1">
@@ -55,8 +58,7 @@
     <section class="mbr-section article content1 cid-qQXgVX2gKQ" id="content1-1f">
       <div class="container">
         <div class="media-container-row">
-          <div class="mbr-text col-12 col-md-8 mbr-fonts-style display-7">
-            <p> {{ camp.long_desc }} </p>
+          <div class="mbr-text col-12 col-md-8 mbr-fonts-style display-7" v-html="camp.long_desc">
           </div>
         </div>
       </div>
@@ -96,17 +98,17 @@
         <div class="row tabcont">
           <ul class="nav nav-tabs pt-3 mt-5" role="tablist">
             <li class="nav-item mbr-fonts-style">
-              <a class="nav-link active show display-7" role="tab" data-toggle="tab" href="#tabs3-1k_tab0" aria-selected="true">
+              <a :class="['nav-link show display-7', {'active': tab_id == 1}]" href="#" @click="selectTab($event, 1)">
                 Workshop Details
               </a>
             </li>
             <li class="nav-item mbr-fonts-style">
-              <a class="nav-link  active show display-7" role="tab" data-toggle="tab" href="#tabs3-1k_tab1" aria-selected="true">
+              <a :class="['nav-link show display-7', {'active': tab_id == 2}]" href="#" @click="selectTab($event, 2)">
                 Course Content
               </a>
             </li>
             <li class="nav-item mbr-fonts-style">
-              <a class="nav-link active show display-7" role="tab" data-toggle="tab" href="#tabs3-1k_tab2" aria-selected="true">
+              <a :class="['nav-link show display-7', {'active': tab_id == 3}]" href="#" @click="selectTab($event, 3)">
                 Why Attend?
               </a>
             </li>
@@ -117,7 +119,7 @@
       <div class="container">
         <div class="row px-1">
           <div class="tab-content">
-            <div id="tab1" class="tab-pane in active mbr-table" role="tabpanel">
+            <div v-show="tab_id === 1" class="tab-pane in active mbr-table">
               <div class="row tab-content-row">
                 <div class="col-xs-12 col-md-6">
                   <div class="card-img ">
@@ -132,7 +134,7 @@
                 </div>
               </div>
             </div>
-            <div id="tab2" class="tab-pane  mbr-table" role="tabpanel">
+            <div v-show="tab_id === 2" class="tab-pane in active mbr-table">
               <div class="row tab-content-row">
                 <div class="col-xs-12 col-md-6">
                   <div class="card-img ">
@@ -141,13 +143,12 @@
                   <h4 class="mbr-element-title  align-center mbr-fonts-style pb-2 display-5">
                     Course Content
                   </h4>
-                  <p class="mbr-section-text  align-center mbr-fonts-style display-7">
-                    {{ camp.content }}
+                  <p class="mbr-section-text  align-center mbr-fonts-style display-7" v-html="camp.content">
                   </p>
                 </div>
               </div>
             </div>
-            <div id="tab3" class="tab-pane  mbr-table" role="tabpanel">
+            <div v-show="tab_id === 3" class="tab-pane in active mbr-table">
               <div class="row tab-content-row">
                 <div class="col-xs-12 col-md-6">
                   <div class="card-img ">
@@ -156,13 +157,12 @@
                   <h4 class="mbr-element-title  align-center mbr-fonts-style pb-2 display-5">
                     Why should your child attend?
                   </h4>
-                  <p class="mbr-section-text  align-center mbr-fonts-style display-7">
-                    {{ camp.why_attend }}
+                  <p class="mbr-section-text  align-center mbr-fonts-style display-7" v-html="camp.why_attend">
                   </p>
                 </div>
               </div>
             </div>
-            <div id="tab4" class="tab-pane  mbr-table" role="tabpanel">
+            <div v-show="tab_id === 4" class="tab-pane in active mbr-table">
               <div class="row tab-content-row">
                 <div class="col-xs-12 col-md-6">
                   <div class="card-img ">
@@ -177,7 +177,7 @@
                 </div>
               </div>
             </div>
-            <div id="tab5" class="tab-pane  mbr-table" role="tabpanel">
+            <div v-show="tab_id === 5" class="tab-pane in active mbr-table">
               <div class="row tab-content-row">
                 <div class="col-xs-12 col-md-6">
                   <div class="card-img ">
@@ -192,7 +192,7 @@
                 </div>
               </div>
             </div>
-            <div id="tab6" class="tab-pane  mbr-table" role="tabpanel">
+            <div v-show="tab_id === 6" class="tab-pane in active mbr-table">
               <div class="row tab-content-row">
                 <div class="col-xs-12 col-md-6">
                   <div class="card-img ">
@@ -237,16 +237,16 @@
                 <div class="modal-body">
                   <div class="carousel-inner">
                     <div v-for="i in 8" :key="i">
-                      <div :class="['carousel-item', {'active': i == 1}]">
+                      <div :class="['carousel-item', {'active': i == carousel_id}]">
                         <img :src="'/assets/images/gallery0' + (i-1) + '.jpg'"/>
                       </div>
                     </div>
                   </div>
-                  <a class="carousel-control carousel-control-prev" role="button" data-slide="prev" href="#lb-gallery3-1a">
+                  <a class="carousel-control carousel-control-prev" href="#" @click="prevCrousel">
                     <span class="mbri-left mbr-iconfont" aria-hidden="true"></span>
                     <span class="sr-only">Previous</span>
                   </a>
-                  <a class="carousel-control carousel-control-next" role="button" data-slide="next" href="#lb-gallery3-1a">
+                  <a class="carousel-control carousel-control-next" href="#" @click="nextCrousel">
                     <span class="mbri-right mbr-iconfont" aria-hidden="true"></span>
                     <span class="sr-only">Next</span>
                   </a>
@@ -585,8 +585,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import axios from 'axios';
+import parallax from 'vue-parallaxy'
 
 export default {
+  components: {
+    parallax
+  },
   computed: mapGetters({
     camp_id: 'camps/camp_id',
     parent: 'camps/parent',
@@ -595,6 +599,8 @@ export default {
   data() {
     return {
       camp: null,
+      tab_id: 1,
+      carousel_id: 1,
       gallery_tags: ['Awesome', 'Responsive', 'Creative', 'Animated', 'Awesome', 'Awesome', 'Responsive', 'Animated']
     }
   },
@@ -602,12 +608,34 @@ export default {
     axios.post('/api/details', {camp_id: this.camp_id}).then(response => {
       this.camp = response.data;
     }).catch(error => {
-      console.error(error.message);
+      console.error(error);
     });
   },
   methods: {
+    selectTab(e, id) {
+      e.preventDefault();
+      this.tab_id = id;
+    },
+    nextCrousel(e) {
+      e.preventDefault();
+      this.carousel_id = this.carousel_id + 1
+      if (this.carousel_id > 8) {
+       this.carousel_id = 8;
+      }
+    },
+    prevCrousel(e) {
+      e.preventDefault();
+      this.carousel_id = this.carousel_id - 1
+      if (this.carousel_id < 1) {
+       this.carousel_id = 1;
+      }
+    },
     register() {
-      this.$router.push({name: 'camps.register.parent1'});
+      if (!this.isLoggedin) {
+        this.$router.push({name: 'camps.register.parent1'});
+      } else {
+        this.$router.push({name: 'camps.child-details'});
+      }
     },
     enrol() {
       if (this.parent) {
@@ -627,5 +655,30 @@ export default {
   .camp-list {
     justify-content: flex-start !important;
   }
+  .Masthead {
+    height: 300px !important;
+    z-index: 0 !important;
+    max-width: 100% !important;
+  }
+  .Masthead__image {
+    height: 200% !important;
+  }
+  .parallax-content {
+    position: absolute;
+    top: 80px;
+    display: block;
+    width: 100%;
+    max-width: 100% !important;
+  }
+  .mbr-overlay {
+    z-index: 10 !important;
+  }
+
+  @media screen and (min-width: 768px) {
+    .Masthead {
+      min-height: 280px !important;
+    }
+  }
+
 </style>
 

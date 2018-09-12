@@ -42,6 +42,15 @@ export default {
   metaInfo () {
     return { title: this.$t('Search') }
   },
+  created() {
+    axios.post('/api/check-camp-block').then(response => {
+      if (response.data.success == false) {
+        window.location.href = response.data.redirect_url;
+      }
+    }).catch(error => {
+      console.error(error.message);
+    });
+  },
   data: () => ({
     form: new Form({
       post_code: ''

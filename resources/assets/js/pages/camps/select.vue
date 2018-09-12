@@ -1,5 +1,5 @@
 <template>
-  <div v-if="camps.length > 0">
+  <div v-if="load_complete">
     <top-space/>
     <top-space>
       <div slot="title">Camps for {{ cur_enrol.id >= 0 ? cur_enrol.child_name : '' }}</div>
@@ -76,9 +76,13 @@
                 <span class="mbri-left mbr-iconfont mbr-iconfont-btn"></span>
                 BACK
               </a>
-              <a class="btn btn-primary display-4" href="#" @click="next">
+              <a v-if="selected_id" class="btn btn-primary display-4" href="#" @click="next">
                 <span class="mbrib-rocket mbr-iconfont mbr-iconfont-btn"></span>
                 NEXT
+              </a>
+              <a v-if="!selected_id" class="btn btn-danger display-4" href="#" @click="skip">
+                <span class="mbrib-rocket mbr-iconfont mbr-iconfont-btn"></span>
+                No camps for this child
               </a>
             </div>
           </div>
@@ -110,9 +114,12 @@ export default {
       msg: {
         title: 'Alert Title',
         message: 'Alert Message',
-        type: 'error'
+        type: 'error',
+        useConfirmBtn: false,
+        onConfirm: null
       },
-      camp_registered: []
+      camp_registered: [],
+      load_complete: false
     }
   },
   computed: {
@@ -127,7 +134,8 @@ export default {
     },
     cur_camp() {
       let camp_id = this.selected_id ? this.selected_id : this.cur_enrol.camp_id;
-      return this.camps.find(camp => camp.id == camp_id);
+      let camp = this.camps.find(camp => camp.id == camp_id);
+      return camp ? camp : this.camps[0];
     },
     loc_camps() {
       let loc_id = this.location_id ? this.location_id : this.cur_camp.location_id;
@@ -138,9 +146,13 @@ export default {
     }
   },
   created() {
+    if (!this.enrols.length || !this.children.length) {
+      this.$router.push({name: 'camps.search'});
+      return ;
+    }
     this.selected_id = this.cur_enrol.camp_id;
     this.$store.dispatch('camps/fetchLocationCamps', {post_id: this.post.id}).then(() => {
-      this.checkRegistered(this.cur_enrol.child_id)
+      this.checkRegistered(this.cur_enrol.child_id);
     })
   },
   methods: {
@@ -152,12 +164,18 @@ export default {
       this.selected_id = id;
     },
     checkRegistered(child_id) {
-      this.camps.filter(camp => {
+      this.camps.filter((camp, index) => {
         axios.post('/api/check-registered', {
           camp_id: camp.id,
           child_id: child_id
         }).then(response => {
           this.camp_registered[camp.id] = response.data.status;
+          if (this.selected_id == camp.id && this.camp_registered[camp.id]) {
+            this.selected_id = 0
+          }
+          if (index == this.camps.length - 1) {
+            this.load_complete = true
+          }
         });
         return true;
       })
@@ -165,20 +183,17 @@ export default {
     setEnrolData() {
       this.enrol_data.id = this.cur_enrol.id;
       this.enrol_data.camp_id = this.selected_id;
-      this.enrol_data.fee = this.cur_camp.price;
-      this.enrol_data.camp_name = this.cur_camp.name;
+      this.enrol_data.fee = this.selected_id ? this.cur_camp.price : 0;
+      this.enrol_data.camp_name = this.selected_id ? this.cur_camp.topic : '';
     },
     nextSelect() {
+      this.load_complete = false;
       this.selected_id = this.enrols[this.enrol_data.next_id].camp_id ? this.enrols[this.enrol_data.next_id].camp_id : this.selected_id;
       this.location_id = this.cur_camp.location_id;
       this.checkRegistered(this.enrols[this.enrol_data.next_id].child_id);
       this.$router.push({name: 'camps.select'});
     },
     next() {
-      if (this.camp_registered[this.selected_id]) {
-        this.showWarning('No camps for this child');
-        return ;
-      }
       this.setEnrolData();
       this.enrol_data.next_id = this.cur_enrol.id < this.enrols.length - 1 ? this.cur_enrol.id + 1 : this.cur_enrol.id;
       this.$store.dispatch('camps/setEnrol', {enrol: this.enrol_data}).then(response => {
@@ -199,6 +214,12 @@ export default {
           this.nextSelect();
         }
       })
+    },
+    skip() {
+      this.msg.useConfirmBtn = true;
+      this.msg.message = 'Are you sure?';
+      this.msg.onConfirm = this.next
+      this.$refs.simplert.openSimplert(this.msg);
     },
     showWarning(message) {
       this.msg.type = 'warning';

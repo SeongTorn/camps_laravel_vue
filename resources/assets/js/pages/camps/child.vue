@@ -125,8 +125,10 @@ export default {
     parent: 'camps/parent'
   }),
   created() {
-    // console.log(this.parent)
-    // this.$store.dispatch('camp/fetchLocationCamps', {post_id: this.location.id})
+    console.log(this.parent)
+    if (!this.parent) {
+      this.$router.push({name: 'camps.register'})
+    }
   },
   methods: {
     register() {
@@ -136,20 +138,18 @@ export default {
         return this.$store.dispatch('camps/addChildren', {child: response.data});
       }).catch(error => {
         this.form.busy = false;
-        this.msg.title = 'API call error';
-        this.msg.message = 'Error occured in calling api';
-        this.showMessage();
+        this.showError('Error occured in calling api');
       }).then(() => {
         this.form.busy = false;
         this.$router.push({name: 'camps.all-children'})
       }).catch(error => {
         this.form.busy = false;
-        this.msg.title = 'Add Children Error';
-        this.msg.message = error;
-        this.showMessage();
+        this.showError('Add Children Error');
       });
     },
-    showMessage() {
+    showError(message) {
+      this.msg.title = 'Error';
+      this.msg.message = message;
       this.$refs.simplert.openSimplert(this.msg);
     }
   }

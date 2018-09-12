@@ -2,11 +2,15 @@ $.fn.outerFind = function(selector) {
     return this.find(selector).addBack(selector);
 };
 function initTabs(target) {
+    console.log($(target).find('.main-layout').length);
     if ($(target).find('.nav-tabs').length !== 0) {
+
         $(target).outerFind('section[id^="tabs"]').each(function() {
             var componentID = $(this).attr('id');
             var $tabsNavItem = $(this).find('.nav-tabs .nav-item');
             var $tabPane = $(this).find('.tab-pane');
+
+
 
             $tabPane.removeClass('active').eq(0).addClass('active');
 
@@ -33,7 +37,6 @@ if (isBuilder) {
 } else {
     if (typeof window.initTabsPlugin === 'undefined'){
         window.initTabsPlugin = true;
-        console.log('init tabs by plugin');
         initTabs(document.body);
     }
 }

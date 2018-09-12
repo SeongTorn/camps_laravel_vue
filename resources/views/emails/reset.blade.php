@@ -3,7 +3,7 @@
     <meta charset="utf-8">
   </head>
   <body>
-    <h2>Test Email</h2>
-    <p>Test Body</p>
+    <h2>{{ $subject }}</h2>
+    <p>{{ $content }}</p>
   </body>
 </html>

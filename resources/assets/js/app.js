@@ -27,8 +27,8 @@ const options = {
 
 Vue.use(VueStripeCheckout, options);
 Vue.use(Simplert)
-
 /* eslint-disable no-new */
+
 new Vue({
   i18n,
   store,

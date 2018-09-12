@@ -37,30 +37,30 @@
 
       <section class="features3 cid-qQWAzjWbWN">
         <div class="container">
-          <div class="media-container-row camp-list">
-            <div v-for="camp in loc_camps" :key="camp.id" class="card p-3 col-12 col-md-6 col-lg-4">
+          <div v-for="row in (Math.floor((loc_camps.length-1)/3) + 1)" :key="row" class="media-container-row camp-list">
+            <div v-for="id in loc_camps.length - (row - 1) * 3" :key="id" class="card p-3 col-12 col-md-6 col-lg-4">
               <div class="card-wrapper">
                 <div class="card-img">
                   <img src="/assets/images/file-27-624x465.png">
                 </div>
                 <div class="card-box">
-                  <h4 class="card-title mbr-fonts-style display-7">{{ camp.topic }}</h4>
-                  <p class="mbr-text mbr-fonts-style display-7">{{ camp.topicDesc }}<br><br></p>
-                  <p class="mbr-section-text  align-center mbr-fonts-style display-7"><span class="mbri-calendar">&nbsp;</span> {{ camp.start_date }} ({{ camp.length }})</p>
-                  <p class="mbr-section-text  align-center mbr-fonts-style display-7"><span class="mbri-clock">&nbsp;</span> {{ camp.startTime }} - {{ camp.endTime }} with drop off from {{ camp.arriveTime }} and pickup until {{ camp.departTime }}</p>
-                  <p class="mbr-section-text  align-center mbr-fonts-style display-7"><span class="mbri-pin">&nbsp;</span>{{ camp.name }}</p>
-                  <p class="mbr-section-text  align-center mbr-fonts-style display-7"><span class="mbri-user">&nbsp;</span> Ages {{ camp.ages }}</p>
-                  <p class="mbr-section-text  align-center mbr-fonts-style display-7"><span class="mbri-sale">&nbsp;</span> ${{ camp.price }}</p>
+                  <h4 class="card-title mbr-fonts-style display-7">{{ loc_camps[(row-1) * 3 + id - 1].topic }}</h4>
+                  <p class="mbr-text mbr-fonts-style display-7">{{ loc_camps[(row-1) * 3 + id - 1].topicDesc }}<br><br></p>
+                  <p class="mbr-section-text  align-center mbr-fonts-style display-7"><span class="mbri-calendar">&nbsp;</span> {{ loc_camps[(row-1) * 3 + id - 1].start_date }} ({{ loc_camps[(row-1) * 3 + id - 1].length }})</p>
+                  <p class="mbr-section-text  align-center mbr-fonts-style display-7"><span class="mbri-clock">&nbsp;</span> {{ loc_camps[(row-1) * 3 + id - 1].startTime }} - {{ loc_camps[(row-1) * 3 + id - 1].endTime }} with drop off from {{ loc_camps[(row-1) * 3 + id - 1].arriveTime }} and pickup until {{ loc_camps[(row-1) * 3 + id - 1].departTime }}</p>
+                  <p class="mbr-section-text  align-center mbr-fonts-style display-7"><span class="mbri-pin">&nbsp;</span>{{ loc_camps[(row-1) * 3 + id - 1].name }}</p>
+                  <p class="mbr-section-text  align-center mbr-fonts-style display-7"><span class="mbri-user">&nbsp;</span> Ages {{ loc_camps[(row-1) * 3 + id - 1].ages }}</p>
+                  <p class="mbr-section-text  align-center mbr-fonts-style display-7"><span class="mbri-sale">&nbsp;</span> ${{ loc_camps[(row-1) * 3 + id - 1].price }}</p>
                 </div>
                 <div class="mbr-section-btn text-center">
-                  <a href="#" class="btn btn-primary display-4" @click="detail($event, camp.id)">
+                  <a href="#" class="btn btn-primary display-4" @click="detail($event, loc_camps[(row-1) * 3 + id - 1].id)">
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <span class="mbrib-star mbr-iconfont mbr-iconfont-btn"></span>Learn More
                     &nbsp;&nbsp;&nbsp;&nbsp;
                   </a>
                 </div>
                 <div class="mbr-section-btn text-center">
-                  <a v-if="camp.class_capacity - camp.sold > 0" href="#" class="btn btn-secondary display-4" @click="register($event, camp.id)">
+                  <a v-if="loc_camps[(row-1) * 3 + id - 1].class_capacity - loc_camps[(row-1) * 3 + id - 1].sold > 0" href="#" class="btn btn-secondary display-4" @click="register($event, loc_camps[(row-1) * 3 + id - 1].id)">
                     &nbsp;&nbsp;
                     <span class="mbrib-rocket mbr-iconfont mbr-iconfont-btn"></span>Register Now
                     &nbsp;&nbsp;
@@ -76,7 +76,7 @@
                 <br>
                 <div class="alert">
                   <strong>	&#9888; In High Demand!</strong>
-                  This camp only has {{ camp.class_capacity - camp.sold > 9 ? 9 : camp.class_capacity - camp.sold }} spaces available.
+                  This camp only has {{ loc_camps[(row-1) * 3 + id - 1].class_capacity - loc_camps[(row-1) * 3 + id - 1].sold > 9 ? 9 : loc_camps[(row-1) * 3 + id - 1].class_capacity - loc_camps[(row-1) * 3 + id - 1].sold }} spaces available.
                 </div>
               </div>
             </div>
@@ -142,7 +142,8 @@ export default {
   computed: {
     ...mapGetters({
       post: 'camps/post',
-      camps: 'camps/camps'
+      camps: 'camps/camps',
+      isLoggedin: 'auth/check'
     }),
     grouped_camps() {
       return _.groupBy(this.camps, camp => camp.location);
@@ -150,7 +151,6 @@ export default {
   },
   created() {
     this.$store.dispatch('camps/fetchLocationCamps', {post_id: this.post.id}).then(() => {
-      // console.log(this.camps)
       // console.log(this.grouped_camps)
     })
   },
@@ -166,7 +166,11 @@ export default {
     register(e, id) {
       e.preventDefault();
       this.$store.dispatch('camps/setCampId', {camp_id: id}).then(() => {
-        this.$router.push({name: 'camps.register'});
+        if (!this.isLoggedin) {
+          this.$router.push({name: 'camps.register'});
+        } else {
+          this.$router.push({name: 'camps.child-details'});
+        }
       }).catch(error => {
         this.showError('Set Camp Id Error');
       })

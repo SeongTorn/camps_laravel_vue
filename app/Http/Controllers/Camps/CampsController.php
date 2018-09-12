@@ -9,6 +9,7 @@ use App\Models\ParentDetail;
 use App\Models\ChildDetail;
 use App\Models\GiftCard;
 use App\Models\Enrolment;
+use App\Models\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -22,6 +23,21 @@ class CampsController extends Controller
   public function __construct()
   {
     $this->postController = new PostController();
+  }
+
+  public function checkCampBlock(Request $request)
+  {
+    date_default_timezone_set("Australia/Sydney");
+    $from_date = date('Y-m-d');
+    $to_date = date('Y-m-d', strtotime(' + 35 days')); //within 5 weeks
+    $camp_blocks = DB::table('camp_blocks')
+                  ->where('start_date', '>=', $from_date)
+                  ->where('start_date', '<=', $to_date);
+    if ($camp_blocks->count() > 0) {
+      return response()->json(['success' => true]);
+    } else {
+      return response()->json(['success' => false, 'redirect_url' => 'https://url.learncode.com.au/mailing-list-join-camps-not-released/']);
+    }
   }
 
   public function getLocationCamps(Request $request)
@@ -72,6 +88,7 @@ class CampsController extends Controller
                             'workshops.image as topicImage',
                             DB::raw('COUNT(enrolments.id) as sold'))
                   ->where('locations.id', $location->id)
+                  ->where('camps.secret', 0)
                   ->groupBy('camps.id')
                   ->get();
       $camp_data = array_filter($camp_data->toArray(), function($item){
@@ -90,9 +107,9 @@ class CampsController extends Controller
     }
     if (!$camps || !count($camps)) {
       // return redirect('no-camps')->with('postcode', $post->getData()->postcode);
-      return response()->json(null);
+      return response()->json(['success'=>false, 'redirect_url' => 'https://url.learncode.com.au/no-camps-in-area/?lead-postcode='.$post->getData()->postcode]);
     } else {
-      return response()->json($camps);
+      return response()->json(['success'=>true, 'data'=>$camps]);
     }
   }
 
@@ -232,12 +249,12 @@ class CampsController extends Controller
   public function getChildren(Request $request)
   {
     $children = ChildDetail::where('parent_id', $request->get('parent_id'))
-                            ->where('is_active', 1)
+                            ->where('is_active', '=', 1)
                             ->get();
     if (count($children) > 0) {
       return response()->json(['status'=>'success', 'children'=>$children->toArray()]);
     } else {
-      return response()->json(['status'=>'error']);
+      return response()->json(['status'=>'failed']);
     }
   }
 
@@ -298,6 +315,19 @@ class CampsController extends Controller
       $gift->update(['amount_redeemed' => $gift_redeemed]);
     }
     return response()->json(['success'=>true]);
+  }
+
+  public function updateEmail(Request $request)
+  {
+    $parent = ParentDetail::where('email', $request->get('email'));
+    if ($parent->count() > 0) {
+      $parent->update(['email' => $request->get('new_email')]);
+    }
+    $user = User::where('email', $request->get('email'));
+    if ($user->count() > 0) {
+      $user->update(['email' => $request->get('new_email')]);
+    }
+    return response()->json(['status'=>'success']);
   }
 
   public function toNoCampPage(Request $request)

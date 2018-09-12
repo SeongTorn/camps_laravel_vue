@@ -34,6 +34,7 @@ Route::group(['middleware' => 'guest:api'], function () {
   Route::get('oauth/{driver}/callback', 'Auth\OAuthController@handleProviderCallback')->name('oauth.callback');
 });
 
+Route::post('check-camp-block', 'Camps\CampsController@checkCampBlock');
 Route::post('postcodes', 'Camps\PostController@getPostCodes');
 Route::post('camps', 'Camps\CampsController@getLocationCamps');
 Route::post('children', 'Camps\CampsController@getChildren');
@@ -46,11 +47,13 @@ Route::post('deactive-child', 'Camps\CampsController@deactiveChild');
 Route::post('check-gift-card', 'Camps\CampsController@checkGiftCard');
 Route::post('check-payment', 'Camps\CampsController@checkPayment');
 Route::post('save-payment', 'Camps\CampsController@savePayment');
+Route::post('update-email', 'Camps\CampsController@updateEmail');
 Route::post('stripe-publish-key', 'Camps\PaymentController@stripePublishKey');
 Route::post('stripe-create-charge', 'Camps\PaymentController@stripeCreateCharge');
 
 Route::post('subscribe',['as'=>'subscribe','uses'=>'Camps\MailChimpController@subscribe']);
 Route::post('unsubscribe',['as'=>'unsubscribe','uses'=>'Camps\MailChimpController@unsubscribe']);
+Route::post('update-subscribe',['as'=>'update-subscribe','uses'=>'Camps\MailChimpController@updateSubscribe']);
 Route::post('add-to-drip',['as'=>'add-to-drip','uses'=>'Camps\DripController@addUserToDrip']);
 Route::post('update-from-drip',['as'=>'update-from-drip','uses'=>'Camps\DripController@updateUserFromDrip']);
 Route::post('remove-from-drip',['as'=>'remove-from-drip','uses'=>'Camps\DripController@removeUserFromDrip']);

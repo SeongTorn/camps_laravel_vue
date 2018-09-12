@@ -91,9 +91,7 @@ export default {
     },
     async login_success() {
       await this.$store.dispatch('auth/fetchUser')
-      console.log(this.user);
-      await this.$store.dispatch('camps/fetchParent', {email: this. user.email})
-      console.log(this.parent);
+      await this.$store.dispatch('camps/fetchParent', {email: this.user.email})
       this.$router.push({name: 'camps.all-children'});
     },
     showMessage() {

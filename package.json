@@ -27,6 +27,7 @@
     "vue-bootstrap-typeahead": "^0.1.2",
     "vue-i18n": "^7.6.0",
     "vue-meta": "^1.5.0",
+    "vue-parallaxy": "^1.1.1",
     "vue-router": "^3.0.1",
     "vue-stripe-checkout": "^1.0.8",
     "vue2-simplert-plugin": "^0.4.1",

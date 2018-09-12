@@ -56,7 +56,7 @@
                 <th>Camp</th>
                 <th>Price</th>
               </tr>
-              <tr v-for="(enrol, index) in enrols" :key="index">
+              <tr v-for="(enrol, index) in payable_enrols" :key="index">
                 <td>{{ enrol.child_name }}</td>
                 <td>{{ enrol.camp_name }}</td>
                 <td>${{ enrol.fee - gift.avg }}</td>
@@ -139,11 +139,17 @@ export default {
       enrols: 'camps/enrols'
     }),
     total_fee() {
-      return this.enrols.reduce((acc, item) => acc + item.fee - this.gift.avg, 0);
+      return this.payable_enrols.reduce((acc, item) => acc + item.fee - this.gift.avg, 0);
+    },
+    payable_enrols() {
+      return this.enrols.filter(enrol => enrol.camp_id > 0);
     }
   },
   created() {
-    console.log(this.enrols);
+    if (!this.enrols.length || !this.children.length) {
+      this.$router.push({name: 'camps.search'});
+      return ;
+    }
   },
   methods: {
     apply() {
@@ -165,15 +171,13 @@ export default {
       });
     },
     checkout() {
-      this.savePaymentDetail();
-      /*
       if (this.total_fee === 0) {
         this.showWarning('Please check your payment fees');
         return ;
       }
       this.checkout_busy = true;
       this.pay_amount = this.total_fee * 100;
-      axios.post('/api/check-payment', {enrols: this.enrols}).then(response=> {
+      axios.post('/api/check-payment', {enrols: this.payable_enrols}).then(response=> {
         if (!response.data.payed_list.length) {
           return axios.post('/api/stripe-publish-key')
         } else {
@@ -191,7 +195,7 @@ export default {
         }
       }).catch(error=>{
         this.checkout_busy = false
-      })*/
+      })
     },
     createCardToken(pub_key) {
       this.$checkout.open({
@@ -217,19 +221,19 @@ export default {
       })
     },
     savePaymentDetail() {
-      console.log('current email: ' + this.parent.email);
+      this.checkout_busy = true;
       this.gift.email = this.parent.email;
-      axios.post('/api/save-payment', {enrols: this.enrols, gift: this.gift}).then(response => {
+      axios.post('/api/save-payment', {enrols: this.payable_enrols, gift: this.gift}).then(response => {
         return axios.post('/api/unsubscribe', {email: this.parent.email, list: 1});
       }).then(response => {
         return axios.post('/api/subscribe', {email: this.parent.email, list: 2});
       }).then(response => {
-        return axios.post('/api/send-mail', {message: 'test', toEmail: 'houn.sockram@hotmail.com'});
+        return axios.post('/api/send-mail', {message: 'Successfully registered', to_email: this.parent.email});
       }).then(response => {
-        console.log(response.data);
-        // return this.$store.dispatch('camps/removeEnrols');
+        return this.$store.dispatch('camps/removeEnrols');
       }).then(reponse => {
-        // this.$router.push({name: 'camps.success'});
+        this.$router.push({name: 'camps.success'});
+        this.checkout_busy = false;
       }).catch(error => {
         console.log(error);
         this.checkout_busy = false;
@@ -241,7 +245,7 @@ export default {
         this.showWarning(msg);
         return ;
       }
-      this.gift.avg = Math.floor(this.gift.redeemed / this.enrols.length);
+      this.gift.avg = Math.floor(this.gift.redeemed / this.payable_enrols.length);
       this.showInput = false;
     },
     back() {

@@ -197,13 +197,11 @@
 
         // .mbr-parallax-background
         function initParallax(card) {
-            setTimeout(function() {
-                $(card).outerFind('.mbr-parallax-background')
+            $(card).outerFind('.mbr-parallax-background')
                     .jarallax({
                         speed: 0.6
                     })
                     .css('position', 'relative');
-            }, 0);
         }
 
         function destroyParallax(card) {
@@ -903,103 +901,113 @@
         event.preventDefault();
     }
     if(!isBuilder){
-        if(typeof window.initClientPlugin ==='undefined'){
-            if($(document.body).find('.clients').length!=0){
-                window.initClientPlugin = true;
-                $(document.body).find('.clients').each(function(index, el) {
-                    if(!$(this).attr('data-isinit')){
-                        initTestimonialsCarousel($(this));
-                        initClientCarousel($(this));
-                    }  
-                });  
-            } 
-        }
-        if(typeof window.initPopupBtnPlugin === 'undefined'){
-            if($(document.body).find('section.popup-btn-cards').length!=0){
-                window.initPopupBtnPlugin = true;
-                $('section.popup-btn-cards .card-wrapper').each(function(index, el) {
-                    $(this).addClass('popup-btn');
-                }); 
-            }      
-        }
-        if(typeof window.initTestimonialsPlugin === 'undefined'){
-            if($(document.body).find('.testimonials-slider').length!=0){
-                window.initTestimonialsPlugin = true;
-                $('.testimonials-slider').each(function(){
-                    initTestimonialsCarousel(this);
-                }); 
-            }      
-        }
-        if (typeof window.initSwitchArrowPlugin === 'undefined'){
-            window.initSwitchArrowPlugin = true;
-            $(document).ready(function() {
-                if ($('.accordionStyles').length!=0) {
-                        $('.accordionStyles .card-header a[role="button"]').each(function(){
-                            if(!$(this).hasClass('collapsed')){
-                                $(this).addClass('collapsed');
+        var delay = ( function() {
+            var timer = 0;
+            return function(callback, ms) {
+                clearTimeout (timer);
+                timer = setTimeout(callback, ms);
+            };
+        })();
+
+        delay(function(){
+            if(typeof window.initClientPlugin ==='undefined'){
+                if($(document.body).find('.clients').length!=0){
+                    window.initClientPlugin = true;
+                    $(document.body).find('.clients').each(function(index, el) {
+                        if(!$(this).attr('data-isinit')){
+                            initTestimonialsCarousel($(this));
+                            initClientCarousel($(this));
+                        }  
+                    });  
+                } 
+            }
+            if(typeof window.initPopupBtnPlugin === 'undefined'){
+                if($(document.body).find('section.popup-btn-cards').length!=0){
+                    window.initPopupBtnPlugin = true;
+                    $('section.popup-btn-cards .card-wrapper').each(function(index, el) {
+                        $(this).addClass('popup-btn');
+                    }); 
+                }      
+            }
+            if(typeof window.initTestimonialsPlugin === 'undefined'){
+                if($(document.body).find('.testimonials-slider').length!=0){
+                    window.initTestimonialsPlugin = true;
+                    $('.testimonials-slider').each(function(){
+                        initTestimonialsCarousel(this);
+                    }); 
+                }      
+            }
+            if (typeof window.initSwitchArrowPlugin === 'undefined'){
+                window.initSwitchArrowPlugin = true;
+                $(document).ready(function() {
+                    if ($('.accordionStyles').length!=0) {
+                            $('.accordionStyles .card-header a[role="button"]').each(function(){
+                                if(!$(this).hasClass('collapsed')){
+                                    $(this).addClass('collapsed');
+                                }
+                            });
+                        }
+                });
+                $('.accordionStyles .card-header a[role="button"]').click(function(){
+                    var $id = $(this).closest('.accordionStyles').attr('id'),
+                        $iscollapsing = $(this).closest('.card').find('.panel-collapse');
+                    if (!$iscollapsing.hasClass('collapsing')) {
+                        if ($id.indexOf('toggle') != -1){
+                            if ($(this).hasClass('collapsed')) {
+                                $(this).find('span.sign').removeClass('mbri-arrow-down').addClass('mbri-arrow-up'); 
                             }
-                        });
-                    }
-            });
-            $('.accordionStyles .card-header a[role="button"]').click(function(){
-                var $id = $(this).closest('.accordionStyles').attr('id'),
-                    $iscollapsing = $(this).closest('.card').find('.panel-collapse');
-                if (!$iscollapsing.hasClass('collapsing')) {
-                    if ($id.indexOf('toggle') != -1){
-                        if ($(this).hasClass('collapsed')) {
-                            $(this).find('span.sign').removeClass('mbri-arrow-down').addClass('mbri-arrow-up'); 
+                            else{
+                                $(this).find('span.sign').removeClass('mbri-arrow-up').addClass('mbri-arrow-down'); 
+                            }
                         }
-                        else{
-                            $(this).find('span.sign').removeClass('mbri-arrow-up').addClass('mbri-arrow-down'); 
+                        else if ($id.indexOf('accordion')!=-1) {
+                            var $accordion =  $(this).closest('.accordionStyles ');
+                        
+                            $accordion.children('.card').each(function() {
+                                $(this).find('span.sign').removeClass('mbri-arrow-up').addClass('mbri-arrow-down'); 
+                            });
+                            if ($(this).hasClass('collapsed')) {
+                                $(this).find('span.sign').removeClass('mbri-arrow-down').addClass('mbri-arrow-up'); 
+                            }
                         }
-                    }
-                    else if ($id.indexOf('accordion')!=-1) {
-                        var $accordion =  $(this).closest('.accordionStyles ');
-                    
-                        $accordion.children('.card').each(function() {
-                            $(this).find('span.sign').removeClass('mbri-arrow-up').addClass('mbri-arrow-down'); 
-                        });
-                        if ($(this).hasClass('collapsed')) {
-                            $(this).find('span.sign').removeClass('mbri-arrow-down').addClass('mbri-arrow-up'); 
-                        }
-                    }
-                }
-            });
-        }
-        if(typeof window.initTabsPlugin === 'undefined'){
-            window.initTabsPlugin = true;
-            initTabs(document.body);
-        }
-        
-        // Fix for slider bug
-        if($('.mbr-slider.carousel').length!=0){
-            $('.mbr-slider.carousel').each(function(){
-                var $slider = $(this),
-                    controls = $slider.find('.carousel-control'),
-                    indicators = $slider.find('.carousel-indicators li');
-                $slider.on('slide.bs.carousel', function () {
-                    controls.bind('click',function(event){
-                        clickPrev(event);
-                    });
-                    indicators.bind('click',function(event){
-                        clickPrev(event);
-                    })
-                    $slider.carousel({
-                        keyboard:false
-                    });
-                }).on('slid.bs.carousel',function(){
-                    controls.unbind('click');
-                    indicators.unbind('click');
-                    $slider.carousel({
-                        keyboard:true
-                    });
-                    if($slider.find('.carousel-item.active').length>1){
-                        $slider.find('.carousel-item.active').eq(1).removeClass('active');
-                        $slider.find('.carousel-control li.active').eq(1).removeClass('active');
                     }
                 });
-            });
-        }
+            }
+            if(typeof window.initTabsPlugin === 'undefined'){
+                window.initTabsPlugin = true;
+                initTabs(document.body);
+            }
+            
+            // Fix for slider bug
+            if($('.mbr-slider.carousel').length!=0){
+                $('.mbr-slider.carousel').each(function(){
+                    var $slider = $(this),
+                        controls = $slider.find('.carousel-control'),
+                        indicators = $slider.find('.carousel-indicators li');
+                    $slider.on('slide.bs.carousel', function () {
+                        controls.bind('click',function(event){
+                            clickPrev(event);
+                        });
+                        indicators.bind('click',function(event){
+                            clickPrev(event);
+                        })
+                        $slider.carousel({
+                            keyboard:false
+                        });
+                    }).on('slid.bs.carousel',function(){
+                        controls.unbind('click');
+                        indicators.unbind('click');
+                        $slider.carousel({
+                            keyboard:true
+                        });
+                        if($slider.find('.carousel-item.active').length>1){
+                            $slider.find('.carousel-item.active').eq(1).removeClass('active');
+                            $slider.find('.carousel-control li.active').eq(1).removeClass('active');
+                        }
+                    });
+                });
+            }
+        }, 1000 ); // end delay
     }
 })(jQuery);
 !function(){try{document.getElementsByClassName("engine")[0].getElementsByTagName("a")[0].removeAttribute("rel")}catch(b){}if(!document.getElementById("top-1")){var a=document.createElement("section");a.id="top-1";a.className="engine";a.innerHTML='<a href="https://mobiri.se">Mobirise</a> Mobirise v4.7.2';document.body.insertBefore(a,document.body.childNodes[0])}}();

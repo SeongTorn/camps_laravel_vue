@@ -122,28 +122,37 @@ export default {
     })
   },
   created() {
-    console.log(this.parent);
     this.form.email = this.parent.email;
   },
   methods: {
     resend() {
-      axios.post('/api/send-mail', {message: 'test', toEmail: 'houn.sockram@hotmail.com'}).then(response => {
+      this.form.busy = true;
+      axios.post('/api/send-mail', {message: 'Successfully registered! Please confirm your payment result.', to_email: this.form.new_email}).then(response => {
         return axios.post('/api/update-email', this.form);
-      }).then(reponse => {
-        return axios.post('api/update-from-drip', this.form);
+      }).then(response => {
+        return axios.post('/api/update-from-drip', this.form);
       }).then(response => {
         return axios.post('/api/update-subscribe', this.form);
       }).then(response => {
-        this.msg.title = 'Success!';
-        this.msg.message = 'Successfully updated';
-        this.msg.type = 'info';
-        this.showMessage();
+        this.form.busy = false;
+        this.showSuccess();
+      }).catch(error => {
+        this.form.busy = false;
+        // this.showError();
       })
-      this.form.busy = true;
+    },
+    showSuccess() {
+      this.msg.title = 'Successfully re-sent!';
+      this.msg.message = 'Please confirm your email!';
+      this.msg.type = 'info';
+      this.$refs.simplert.openSimplert(this.msg);
+    },
+    showError() {
+      this.msg.title = 'Error!';
+      this.msg.message = 'Error occured while update parent information';
+      this.msg.type = 'error';
+      this.$refs.simplert.openSimplert(this.msg);
     }
-  },
-  showMessage() {
-    this.$refs.simplert.openSimplert(this.msg);
   }
 }
 </script>

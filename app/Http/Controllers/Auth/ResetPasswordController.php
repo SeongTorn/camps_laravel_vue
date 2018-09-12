@@ -10,6 +10,8 @@ class ResetPasswordController extends Controller
 {
     use ResetsPasswords;
 
+    protected $redirectPath = "/camps/password/reset/";
+
     /**
      * Create a new controller instance.
      *

@@ -10,22 +10,29 @@ class MailController extends Controller
 {
   public function sendMail(Request $request)
   {
-    if ($request->get('message') != null) {
+    $from_addr = env('MAIL_FROM_ADDRESS', '');
+    $from_name = env('MAIL_FROM_NAME', '');
+
+    if ($request->get('to_email') != null) {
       $data = array (
-        'message' => 'test mail'
+        'content' => $request->get('message'),
+        'from' => $from_addr,
+        'from_name' => $from_name,
+        'to' => $request->get('to_email'),
+        'subject' => 'CodeSpaceCamp'
       );
     } else {
       $data [] = '';
     }
     // Mail::to('houn.sockram@hotmail.com')->send(new SendMail($data));
-    /*Mail::send ('emails.reset', $data, function($message) use($request) {
-      $message->from('seongtorn@gmail.com', 'Just Laravel');
-      $message->to('houn.sockram@hotmail.com')->subject ('Just Laravel demo email using SendGrid');
-    });*/
-    Mail::send('emails.reset', $data, function($message) use ($data) {
+    Mail::send ('emails.reset', $data, function($message) use ($data) {
+      $message->from($data['from'], $data['from_name']);
+      $message->to($data['to'])->subject($data['subject']);
+    });
+    /*Mail::send('emails.reset', $data, function($message) use ($data) {
       $message->to("houn.sockram@hotmail.com");
       $message->subject('Sendgrid Testing');
-    });
+    });*/
     return response()->json(['success' => true]);
   }
 }

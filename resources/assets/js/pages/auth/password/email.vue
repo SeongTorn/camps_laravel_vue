@@ -37,6 +37,7 @@
     </section>
     </form>
     <bottom-space/>
+    <simplert :useRadius="true" :useIcon="true" ref="simplert"></simplert>
   </div>
 </template>
 
@@ -50,6 +51,11 @@ export default {
   },
   data: () => ({
     status: '',
+    msg: {
+      title: 'Alert Title',
+      message: 'Alert Message',
+      type: 'info'
+    },
     form: new Form({
       email: ''
     })
@@ -58,7 +64,14 @@ export default {
     async send () {
       const { data } = await this.form.post('/api/password/email')
       this.status = data.status
+      this.showMessage(data.status)
       this.form.reset()
+    },
+    showMessage(message) {
+      this.msg.title = 'Success!';
+      this.msg.message = message;
+      this.msg.type = 'info';
+      this.$refs.simplert.openSimplert(this.msg);
     }
   }
 }

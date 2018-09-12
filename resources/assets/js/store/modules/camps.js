@@ -163,8 +163,11 @@ export const actions = {
   },
   removeEnrols ({ commit }) {
     return new Promise((resolve, reject) => {
-      commit(types.SET_CHILDREN, { children: [] })
+      commit(types.INIT_CHILDREN)
       commit(types.REMOVE_ENROLS)
+      commit(types.REMOVE_ENROLS)
+      commit(types.INIT_CAMPS)
+      commit(types.SET_CAMPID, {camp_id: 0})
       resolve()
     })
   },
@@ -174,20 +177,27 @@ export const actions = {
   async fetchLocationCamps ({ commit }, post_id) {
     try {
       const { data } = await axios.post('/api/camps', { post_id: post_id })
-      commit(types.SET_CAMPS, { camps: data })
-    } catch (e) {
-      commit(types.INIT_CAMPS)
-    }
-  },
-  async fetchChildren ({ commit }, parent_id) {
-    try {
-      const { data } = await axios.post('/api/children', {parent_id: parent_id})
-      if (data.status == "success") {
-        commit(types.SET_CHILDREN, { children: data.children })
+      if (data.success == true) {
+        commit(types.SET_CAMPS, { camps: data.data })
+      } else {
+        window.location.href = data.redirect_url
       }
     } catch (e) {
       commit(types.INIT_CAMPS)
     }
+  },
+  fetchChildren ({ commit }, parent_id) {
+    return new Promise((resolve, reject) => {
+      axios.post('/api/children', {parent_id: parent_id}).then(response => {
+        if (response.data.status == "success") {
+          commit(types.SET_CHILDREN, { children: response.data.children })
+          resolve()
+        } else {
+          commit(types.INIT_CAMPS)
+          reject()
+        }
+      })
+    })
   },
   async fetchParent ({ commit }, email) {
     try {
